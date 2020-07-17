@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {View, ImageBackground, Image} from 'react-native'
 
-var bg=require('./background.png');
-var logo=require('./logo.png');
+var bg=require('./asset/background.png');
+var logo=require('./asset/logo.png');
 export default class SplashScreen extends Component {
 
     constructor(props)
