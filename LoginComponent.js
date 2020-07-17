@@ -3,6 +3,7 @@ import { TouchableOpacity, View, StyleSheet, TextInput, Text } from 'react-nativ
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import App from './App';
+import SignUp from './SignUp';
 
 function LoginComponent({navigation}) {
     return(
@@ -11,6 +12,9 @@ function LoginComponent({navigation}) {
             <TextInput style={styles.inputbox} placeholder="password"/>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')} >
             <Text>LOGIN!</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')} >
+            <Text>REGISTER</Text>
             </TouchableOpacity>
             </View>
     );
@@ -24,6 +28,7 @@ function StartUp() {
         <Stack.Navigator initialRouteName="PreLogin">
           <Stack.Screen name="Login" component={LoginComponent} />
           <Stack.Screen name="Main" component={App}/>
+          <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
