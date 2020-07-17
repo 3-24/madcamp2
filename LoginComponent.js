@@ -5,7 +5,60 @@ import { createStackNavigator } from '@react-navigation/stack';
 import App from './App';
 import SignUp from './SignUp';
 
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-community/google-signin';
+
+_signIn = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    this.setState({ userInfo });
+  } catch (error) {
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      // user cancelled the login flow
+    } else if (error.code === statusCodes.IN_PROGRESS) {
+      // operation (e.g. sign in) is in progress already
+    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      // play services not available or outdated
+    } else {
+      // some other error happened
+    }
+  }
+};
+
+isSignedIn = async () => {
+  const isSignedIn = await GoogleSignin.isSignedIn();
+  this.setState({ isLoginScreenPresented: !isSignedIn });
+};
+
+getCurrentUser = async () => {
+  const currentUser = await GoogleSignin.getCurrentUser();
+  this.setState({ currentUser });
+};
+
+signOut = async () => {
+  try {
+    await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
+    this.setState({ user: null }); // Remember to remove the user from your app's state as well
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 function LoginComponent({navigation}) {
+    GoogleSignin.configure({
+    webClientId: "690743107079-mtcoqcq0maoh8kl4gun0es6pi7hcaiil.apps.googleusercontent.com", // client ID of type WEB for your server(needed to verify user ID and offline access)
+    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    accountName: '', // [Android] specifies an account name on the device that should be used
+        });
+    
+    
     return(
             <View style={styles.container}>
             <TextInput style={styles.inputbox} placeholder="ID"/>
@@ -16,6 +69,12 @@ function LoginComponent({navigation}) {
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')} >
             <Text>REGISTER</Text>
             </TouchableOpacity>
+            <GoogleSigninButton
+              style={{ width: 192, height: 48 }}
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Dark}
+              onPress={this._signIn}
+              disabled={this.state.isSigninInProgress} />
             </View>
     );
 }

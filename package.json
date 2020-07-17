@@ -11,6 +11,7 @@
     "devtools": "react-devtools"
   },
   "dependencies": {
+    "@react-native-community/google-signin": "^4.0.3",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "5.7.1",
     "@react-navigation/native": "5.7.0",
