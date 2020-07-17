@@ -30,9 +30,9 @@ function ProfileScreen() {
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -62,3 +62,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default App;
