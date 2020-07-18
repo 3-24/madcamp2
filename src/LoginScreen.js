@@ -49,41 +49,8 @@ class LoginComponent extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {
-        pushData: [],
-        loggedIn: false
-      }
     }
 
-    componentDidMount() {
-      GoogleSignin.configure({
-        webClientId: "690743107079-mtcoqcq0maoh8kl4gun0es6pi7hcaiil.apps.googleusercontent.com", // client ID of type WEB for your server(needed to verify user ID and offline access)
-        offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-        forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-        accountName: '', // [Android] specifies an account name on the device that should be used
-            });
-    }
-
-    _signIn = async () => {
-      try {
-        await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        this.setState({ userInfo: userInfo, loggedIn: true });
-        console.log(userInfo);
-        _fetch_google_signin(this.state);
-      } catch (error) {
-        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-          // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
-          // operation (f.e. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-          // play services not available or outdated
-        } else {
-          // some other error happened
-        }
-      }
-    };
-    
     render(){
     return(
       <View style={styles.container}>
@@ -95,12 +62,6 @@ class LoginComponent extends Component {
         <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
           <Text>REGISTER</Text>
         </TouchableOpacity>
-        <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={this._signIn}
-          disabled={this.state.isSigninInProgress} />
       </View>
     );
     }
