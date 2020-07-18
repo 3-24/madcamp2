@@ -43,20 +43,40 @@ import auth from '@react-native-firebase/auth';
 // }
 
 
-
-
 class LoginComponent extends Component {
 
     constructor(props) {
       super(props);
+      this.state={
+        email: '',
+        password: ''
+      };
     }
 
     render(){
+      function login(state, nav){
+        auth()
+        .signInWithEmailAndPassword(state.email, state.password)
+        .then(() => {
+          nav.navigate('Main')
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+          }
+      
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+          }
+      
+          console.error(error);
+        });
+      }
     return(
       <View style={styles.container}>
-        <TextInput style={styles.inputbox} placeholder="ID"/>
-        <TextInput style={styles.inputbox} placeholder="password"/>
-        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Main')} >
+        <TextInput style={styles.inputbox} placeholder="Email" onChangeText={(input)=>this.setState({email:input})}/>
+        <TextInput style={styles.inputbox} placeholder="Password" onChangeText={(input)=>this.setState({password:input})}/>
+        <TouchableOpacity style={styles.button} onPress={()=>login(this.state, this.props.navigation)} >
           <Text>LOGIN!</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
