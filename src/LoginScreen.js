@@ -11,8 +11,24 @@ import {
   statusCodes,
 } from '@react-native-community/google-signin';
 
+/* Fetch function for google signin */
+function _fetch_google_signin(state){
+  fetch('http://192.249.19.244:1380/google_signin', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      idToken: state.userInfo.idToken,
+      serverAuthCode: state.userInfo.serverAuthCode
+    })
+  });
+};
+
 
 class LoginComponent extends Component {
+
     constructor(props) {
       super(props);
       this.state = {
@@ -36,7 +52,7 @@ class LoginComponent extends Component {
         const userInfo = await GoogleSignin.signIn();
         this.setState({ userInfo: userInfo, loggedIn: true });
         console.log(userInfo);
-
+        _fetch_google_signin(this.state);
       } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
