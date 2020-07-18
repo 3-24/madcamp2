@@ -13,7 +13,7 @@ import {
 
 /* Fetch function for google signin */
 function _fetch_google_signin(state){
-  fetch('http://192.249.19.244:1380/google_signin', {
+  fetch('http://192.249.19.242:8480/google_signin', {
     method: 'POST',
     headers: {
       Accept: 'application/json',

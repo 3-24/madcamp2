@@ -4,14 +4,12 @@ import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
 function SignUp() {
     return (
         <View style={styles.container}>
-            <Text style={styles.textentry}>Username</Text>
+            <Text style={styles.textentry}>Email</Text>
             <TextInput style={styles.inputbox}/>
             <Text style={styles.textentry}>Password</Text>
             <TextInput secureTextEntry={true} style={styles.inputbox}/>
             <Text style={styles.textentry}>Retype password</Text>
             <TextInput secureTextEntry={true} style={styles.inputbox}/>
-            <Text style={styles.textentry}>Email</Text>
-            <TextInput style={styles.inputbox}/>
             <TouchableOpacity style={styles.button}>
                 <Text>REGISTER!</Text>
             </TouchableOpacity>
