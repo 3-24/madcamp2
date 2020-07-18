@@ -1,11 +1,27 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 function handleSubmit(state){
     const {email, password, confirmPassword } = state;
     if (password !== confirmPassword) {alert("Passwords don't match");}
     else {
-        
+        auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                console.log('User account created & signed in!');
+            })
+            .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                console.log('That email address is already in use!');
+                }
+
+                if (error.code === 'auth/invalid-email') {
+                console.log('That email address is invalid!');
+                }
+
+                console.error(error);
+            });
     }
 }
 

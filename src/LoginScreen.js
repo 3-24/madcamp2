@@ -4,27 +4,45 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import App from './App';
 import SignUp from './SignUp';
+import auth from '@react-native-firebase/auth';
 
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-community/google-signin';
 
-/* Fetch function for google signin */
-function _fetch_google_signin(state){
-  fetch('http://192.249.19.242:8480/google_signin', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      idToken: state.userInfo.idToken,
-      serverAuthCode: state.userInfo.serverAuthCode
-    })
-  });
-};
+
+
+// function LoginComponent() {
+//   // Set an initializing state whilst Firebase connects
+//   const [initializing, setInitializing] = useState(true);
+//   const [user, setUser] = useState();
+
+//   // Handle user state changes
+//   function onAuthStateChanged(user) {
+//     setUser(user);
+//     if (initializing) setInitializing(false);
+//   }
+
+//   useEffect(() => {
+//     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+//     return subscriber; // unsubscribe on unmount
+//   }, []);
+
+//   if (initializing) return null;
+
+//   if (!user) {
+//     return (
+//       <View>
+//         <Text>Login</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View>
+//       <Text>Welcome {user.email}</Text>
+//     </View>
+//   );
+// }
+
+
 
 
 class LoginComponent extends Component {
