@@ -6,8 +6,8 @@ import LoginComponent from './LoginComponent';
 
 const Navigator=createStackNavigator({
 
-    SplashScreen:{screen: SplashScreen, navigationOptions: {header:null}},
-    LoginComponent:{screen: LoginComponent, navigationOptions: {header:null}}
+    SplashScreen:{screen: SplashScreen, navigationOptions: {header:false}},
+    LoginComponent:{screen: LoginComponent, navigationOptions: {header:false}}
 });
 
 export default createAppContainer(Navigator);
