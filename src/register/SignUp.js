@@ -1,13 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 
-function handleSubmit(state){
-    const {email, password, confirmPassword } = state;
-    if (password !== confirmPassword) {alert("Passwords don't match");}
-    else {
-        
-    }
-}
 
 class SignUp extends Component{
     constructor(props){
@@ -15,9 +8,31 @@ class SignUp extends Component{
         this.state = {
             email: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            code: 0
         };
     }
+
+
+    handleSubmit = function(){
+        const {email, password, confirmPassword } = this.state;
+        if (password !== confirmPassword) {alert("Passwords don't match");}
+        else {
+            return fetch('http://192.249.19.242:8480/anon_signup', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+              })
+              .then((response)=>this.state.code=response.json().code);
+        }
+    }
+
 
     render(){
         return (
@@ -28,8 +43,8 @@ class SignUp extends Component{
                 <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({password: input})}/>
                 <Text style={styles.textentry}>Confirm Password</Text>
                 <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({confirmPassword: input})}/>
-                <TouchableOpacity style={styles.button} onPress={()=>handleSubmit(this.state)} >
-                    <Text>REGISTER!</Text>
+                <TouchableOpacity style={styles.button} onPress={()=>this.handleSubmit()} >
+                <Text>REGISTER!</Text>
                 </TouchableOpacity>
             </View>
         );
