@@ -1,20 +1,41 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 
-function SignUp() {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.textentry}>Email</Text>
-            <TextInput style={styles.inputbox}/>
-            <Text style={styles.textentry}>Password</Text>
-            <TextInput secureTextEntry={true} style={styles.inputbox}/>
-            <Text style={styles.textentry}>Retype password</Text>
-            <TextInput secureTextEntry={true} style={styles.inputbox}/>
-            <TouchableOpacity style={styles.button}>
-                <Text>REGISTER!</Text>
-            </TouchableOpacity>
-        </View>
-    );
+function handleSubmit(state){
+    const {email, password, confirmPassword } = state;
+    if (password !== confirmPassword) {alert("Passwords don't match");}
+    else {
+        
+    }
+}
+
+class SignUp extends Component{
+
+
+    constructor(props){
+        super(props);
+        this.state = {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        };
+    }
+
+    render(){
+        return (
+            <View style={styles.container}>
+                <Text style={styles.textentry}>Email</Text>
+                <TextInput style={styles.inputbox} onChangeText={(input)=>this.setState({email:input})}/>
+                <Text style={styles.textentry}>Password</Text>
+                <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({password: input})}/>
+                <Text style={styles.textentry}>Confirm Password</Text>
+                <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({confirmPassword: input})}/>
+                <TouchableOpacity style={styles.button} onPress={()=>handleSubmit(this.state)} >
+                    <Text>REGISTER!</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
