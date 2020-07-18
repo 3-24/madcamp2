@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import faker from 'faker';
 import Router from "./app/Router";
 import { Text, View, Dimensions, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { StackNavigator} from 'react-navigation'
-import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppStack from './app/TabMaster'
