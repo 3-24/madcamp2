@@ -12,28 +12,6 @@ import {
 } from '@react-native-community/google-signin';
 
 
-
-isSignedIn = async () => {
-  const isSignedIn = await GoogleSignin.isSignedIn();
-  this.setState({ isLoginScreenPresented: !isSignedIn });
-};
-
-getCurrentUser = async () => {
-  const currentUser = await GoogleSignin.getCurrentUser();
-  this.setState({ currentUser });
-};
-
-signOut = async () => {
-  try {
-    await GoogleSignin.revokeAccess();
-    await GoogleSignin.signOut();
-    this.setState({ user: null }); // Remember to remove the user from your app's state as well
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-
 class LoginComponent extends Component {
     constructor(props) {
       super(props);
@@ -57,6 +35,8 @@ class LoginComponent extends Component {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
         this.setState({ userInfo: userInfo, loggedIn: true });
+        console.log(userInfo);
+
       } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
