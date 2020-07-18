@@ -1,66 +1,25 @@
-import * as React from 'react';
-import { Text, View } from 'react-native';
+import React, { Component } from 'react';
+import Router from "./app/Router";
+import { Text, View, Dimensions, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { StackNavigator} from 'react-navigation'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AppStack from './app/TabMaster'
 
-function FriendScreen() {
+const App = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Friends!</Text>
-    </View>
-  );
+    <AppStack/>
+  )
 }
 
-function FeedScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Feeds!</Text>
-    </View>
-  );
+class MainActivity extends Component{
+  static navigationOptions={
+    title:'밤편지',
+    headerStyle:{
+      backgroundColor: 'green'
+    },
+    headerTintColor: '#fff',
+  }
 }
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-const Tab = createBottomTabNavigator();
-
-function App() {
-  return (
-    <NavigationContainer independent={true}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === '친구') {
-              iconName = focused ? "people-outline" : "people"
-            } else if (route.name === '피드') {
-              iconName = focused ? 'grid-outline' : 'grid';
-            } else if (route.name === "프로필") {
-              iconName = focused ? 'happy-outline' : 'happy';
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: 'navy',
-          inactiveTintColor: 'gray',
-        }}
-      >
-        <Tab.Screen name="친구" component={FriendScreen} />
-        <Tab.Screen name="피드" component={FeedScreen} />
-        <Tab.Screen name="프로필" component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
-
 export default App;
