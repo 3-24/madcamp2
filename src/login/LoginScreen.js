@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, StyleSheet, TextInput, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import App from './App';
-import SignUp from './SignUp';
+import App from '../main/App';
+import SignUp from '../register/SignUp';
 
 import {
   GoogleSignin,

@@ -1,8 +1,8 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-import SplashScreen from './SplashScreen';
-import LoginComponent from './LoginScreen';
+import SplashScreen from './splash/SplashScreen';
+import LoginComponent from './login/LoginScreen';
 
 const Navigator=createStackNavigator({
     SplashScreen :{screen: SplashScreen, navigationOptions: {header:false}},

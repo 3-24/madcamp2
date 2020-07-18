@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { ImageBackground, Image, StyleSheet, Animated} from 'react-native';
 
-var bg = require('../asset/new_background.png')
-var img_logo=require('../asset/img_logo.png');
-var txt_logo=require('../asset/txt_logo.png');
+var bg = require('../../asset/new_background.png')
+var img_logo=require('../../asset/img_logo.png');
+var txt_logo=require('../../asset/txt_logo.png');
 class SplashScreen extends React.Component {
     constructor(props)
     {

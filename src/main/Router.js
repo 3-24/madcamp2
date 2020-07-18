@@ -1,9 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'
-import FirstTabScreen from './FirstTabScreen';
-import SecondTabScreen from './SecondTabScreen';
-import ThirdTabScreen from './ThirdTabScreen';
+import FirstTabScreen from '../FirstTabScreen';
+import SecondTabScreen from '../SecondTabScreen';
+import ThirdTabScreen from '../ThirdTabScreen';
 
 const Router = createMaterialTopTabNavigator({
     First: {

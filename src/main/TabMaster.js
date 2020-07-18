@@ -4,10 +4,10 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 
-import FirstTabScreen from "./FirstTabScreen";
-import SecondTabScreen from "./SecondTabScreen";
-import ThirdTabScreen from "./ThirdTabScreen";
-import FourthTabScreen from "./FourthTabScreen";
+import FirstTabScreen from "../FirstTabScreen";
+import SecondTabScreen from "../SecondTabScreen";
+import ThirdTabScreen from "../ThirdTabScreen";
+import FourthTabScreen from "../FourthTabScreen";
 
 const FirstTabStack = createStackNavigator(
   {

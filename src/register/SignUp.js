@@ -10,8 +10,6 @@ function handleSubmit(state){
 }
 
 class SignUp extends Component{
-
-
     constructor(props){
         super(props);
         this.state = {
