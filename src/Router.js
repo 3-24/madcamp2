@@ -1,11 +1,9 @@
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createAppContainer } from "react-navigation";
+import Icon from 'react-native-vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'
 import FirstTabScreen from './FirstTabScreen';
 import SecondTabScreen from './SecondTabScreen';
 import ThirdTabScreen from './ThirdTabScreen';
-//import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 const Router = createMaterialTopTabNavigator({
     First: {
@@ -46,13 +44,5 @@ const Router = createMaterialTopTabNavigator({
         showIcon: true
     }
 });
-
-// export const Drawer = createAppContainer(
-//     createDrawerNavigator({
-//       Stack: { screen: Stack },
-//       Tabs: { screen: Tabs },
-//       Plain: { screen: Plain },
-//     })
-// );
 
 export default Router;

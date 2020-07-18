@@ -52,22 +52,22 @@ class LoginComponent extends Component {
     
     render(){
     return(
-            <View style={styles.container}>
-            <TextInput style={styles.inputbox} placeholder="ID"/>
-            <TextInput style={styles.inputbox} placeholder="password"/>
-            <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Main')} >
-            <Text>LOGIN!</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
-            <Text>REGISTER</Text>
-            </TouchableOpacity>
-            <GoogleSigninButton
-              style={{ width: 192, height: 48 }}
-              size={GoogleSigninButton.Size.Wide}
-              color={GoogleSigninButton.Color.Dark}
-              onPress={this._signIn}
-              disabled={this.state.isSigninInProgress} />
-            </View>
+      <View style={styles.container}>
+        <TextInput style={styles.inputbox} placeholder="ID"/>
+        <TextInput style={styles.inputbox} placeholder="password"/>
+        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Main')} >
+          <Text>LOGIN!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
+          <Text>REGISTER</Text>
+        </TouchableOpacity>
+        <GoogleSigninButton
+          style={{ width: 192, height: 48 }}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={this._signIn}
+          disabled={this.state.isSigninInProgress} />
+      </View>
     );
     }
 }

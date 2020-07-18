@@ -1,9 +1,8 @@
 import React from "react";
-import { Text } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator, createMaterialTopTabNavigator } from "react-navigation-tabs";
+import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 
 import FirstTabScreen from "./FirstTabScreen";
 import SecondTabScreen from "./SecondTabScreen";
