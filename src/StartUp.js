@@ -1,12 +1,8 @@
-import React, {Component} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, {Component, createContext} from 'react';
 
 import SplashScreen from './splash/SplashScreen';
 import LoginComponent from './login/LoginScreen';
 import App from './main/App';
-
-const Stack = createStackNavigator();
 
 class Start extends Component {
     constructor(props){
@@ -16,28 +12,27 @@ class Start extends Component {
             auth: false
         }
         this.loadingHandler = this.loadingHandler.bind(this);
+        this.authHandler = this.authHandler.bind(this);
     }
     
     loadingHandler(){
         this.setState({isLoading: false});
     }
 
+    authHandler(auth){
+        this.setState({auth: auth});
+    }
+
     render(){
         if (this.state.isLoading){
             return <SplashScreen handler={this.loadingHandler}/>;
         }
-        return(
-            <NavigationContainer>
-            <Stack.Navigator>
-                { this.state.auth  ? (
-                    <Stack.screen name="Main" component={App}/>
-                ) : (
-                    <Stack.screen name="LogIn" component={LoginComponent}/>
-                )}
-            </Stack.Navigator>
-            </NavigationContainer>
-        )
+        if (this.state.auth){
+            return <App />
+        }
+        else{
+            return <LoginComponent handler={this.authHandler}/>
+        }
     }
 }
-
 export default Start;

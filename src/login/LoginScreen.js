@@ -12,7 +12,6 @@ import {
 
 
 class LoginComponent extends Component {
-
     constructor(props) {
       super(props);
       this.state = {
@@ -68,7 +67,9 @@ class LoginComponent extends Component {
       .then((response)=>response.json())
       .then((json)=>{
         this.state.code = json.code;
-        if(this.state.code === 200) alert("Signin success");
+        if(this.state.code === 200){
+          this.props.handler(true);
+        }
         else alert("Check ID and password");
       })
     }
@@ -100,16 +101,24 @@ class LoginComponent extends Component {
 
 const Stack = createStackNavigator();
 
-function StartUp() {
+class StartUp extends Component {
+  constructor(props){
+    super(props);
+  }
+
+  render(){
     return (
-      <NavigationContainer independent={true}>
-        <Stack.Navigator initialRouteName="PreLogin">
-          <Stack.Screen name="Login" component={LoginComponent} />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Login">
+            {(props)=><LoginComponent {...props} handler={this.props.handler}/>}
+            </Stack.Screen>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
   }
+}
 
 
 
