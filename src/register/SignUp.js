@@ -9,7 +9,6 @@ class SignUp extends Component{
             email: '',
             password: '',
             confirmPassword: '',
-            auth: false
         };
     }
 

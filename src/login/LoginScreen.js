@@ -4,52 +4,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignUp from '../register/SignUp';
 
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-community/google-signin';
-
-
 class LoginComponent extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        pushData: [],
         email: '',
         password: ''
       }
     }
-
-    componentDidMount() {
-      GoogleSignin.configure({
-        webClientId: "690743107079-mtcoqcq0maoh8kl4gun0es6pi7hcaiil.apps.googleusercontent.com", // client ID of type WEB for your server(needed to verify user ID and offline access)
-        offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-        forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-        accountName: '', // [Android] specifies an account name on the device that should be used
-            });
-    }
-
-    _signIn = async () => {
-      try {
-        await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        fetch('http://192.249.19.242:8480/google_signin', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            idToken: userInfo.idToken,
-          })
-        })
-        
-        ;
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
     handleSubmit = function(){
       const {email, password} = this.state;
@@ -88,12 +50,6 @@ class LoginComponent extends Component {
         <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
           <Text>REGISTER</Text>
         </TouchableOpacity>
-        <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={this._signIn}
-          disabled={this.state.isSigninInProgress} />
       </View>
     );
     }
@@ -119,7 +75,6 @@ class StartUp extends Component {
     );
   }
 }
-
 
 
 const styles = StyleSheet.create({
