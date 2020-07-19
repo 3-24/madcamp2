@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, StyleSheet, TextInput, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import App from '../main/App';
 import SignUp from '../register/SignUp';
 
 import {
@@ -49,15 +48,7 @@ class LoginComponent extends Component {
         
         ;
       } catch (error) {
-        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-          // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
-          // operation (f.e. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-          // play services not available or outdated
-        } else {
-          // some other error happened
-        }
+        console.log(error);
       }
     };
 
@@ -111,10 +102,9 @@ const Stack = createStackNavigator();
 
 function StartUp() {
     return (
-      <NavigationContainer>
+      <NavigationContainer independent={true}>
         <Stack.Navigator initialRouteName="PreLogin">
           <Stack.Screen name="Login" component={LoginComponent} />
-          <Stack.Screen name="Main" component={App}/>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>
       </NavigationContainer>

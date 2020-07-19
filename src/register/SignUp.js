@@ -9,12 +9,12 @@ class SignUp extends Component{
             email: '',
             password: '',
             confirmPassword: '',
-            code: 0
+            auth: false
         };
     }
 
 
-    handleSubmit = function(){
+    handleSubmit = async function(){
         const {email, password, confirmPassword } = this.state;
         if (password !== confirmPassword) {alert("Passwords don't match");}
         else {

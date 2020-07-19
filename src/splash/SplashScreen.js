@@ -12,10 +12,11 @@ class SplashScreen extends React.Component {
             LogoAnime: new Animated.Value(0),
             LogoText: new Animated.Value(0),
             loadingSpinner: false,
+            isLoading: false
         };
         setTimeout(()=>
         {
-            this.props.navigation.navigate("LoginComponent");
+            this.props.handler();
         }, 6000);
     }
     componentDidMount() {
