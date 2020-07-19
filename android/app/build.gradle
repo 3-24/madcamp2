@@ -132,9 +132,12 @@ android {
     defaultConfig {
         applicationId "com.madcamp2"
         minSdkVersion rootProject.ext.minSdkVersion
+        multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
+        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
     }
     splits {
         abi {
