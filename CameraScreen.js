@@ -2,6 +2,7 @@
 //  import { View, Text, Touchable, TouchableOpacity } from "react-native";
 import styled from 'styled-components';
 import {RNCamera} from 'react-native-camera';
+import CameraRoll from "@react-native-community/cameraroll";
 
 const View = styled.View`
 flex: 1;
@@ -14,7 +15,7 @@ width: 100px;
 height: 100px;
 border-radius: 50px;
 border: 10px solid;
-background-color: pink;
+background-color: navy;
 `;
 
 const Touchable = styled.TouchableOpacity``;
@@ -30,6 +31,10 @@ const TakePhoto = () => {
           exif: true,
       });
       console.log('😻 data', data);
+      if (data) {
+        const result = await CameraRoll.save(data.uri);
+        console.log('🐤result', result);
+      }
     }
   };
   
@@ -38,8 +43,8 @@ const TakePhoto = () => {
           <RNCamera
             ref={cameraRef}
             style={{
-              width: 200,
-              height: 200,
+              width: '100%',
+              height: '80%',
             }}
             captureAudio={false} />
           <View>
