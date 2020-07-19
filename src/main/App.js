@@ -7,8 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TextInput } from "react-native-gesture-handler";
 import { Input } from "react-native-elements";
 import LoginComponent from '../login/LoginScreen';
-import CameraScreen from './CameraScreen';
-import CameraRoll from '@react-native-community/cameraroll'
+import ImagePicker from 'react-native-image-picker';
+import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 
 var profile_image = require('../../asset/profile_image.jpg')
 function ChangePassword(){
@@ -28,10 +28,30 @@ function ChangePassword(){
 
 
 function ChangeProfile(){
+  showPicker=()=>{
+    const options={
+      title:'사진 추가',
+      takePhotoButtonTitle: '카메라',
+      chooseFromLibraryButtonTitle:'이미지 선택',
+      cancelButtonTitle: '취소',
+      storageOptions:{
+        skipBackup: true, 
+        path: 'images',
+      }
+    };
+    ImagePicker.showImagePicker(options,(response) => {
+      const uri = {uri: response.uri};
+      this.setState({img:uri});
+    })
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
-        <TextInput style={styles.inputbox} placeholder="프로필 사진" onChangeText={(input) => this.setState({profileImage: input})}/>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={showPicker}>
+          <Text style={styles.text}>사진 변경</Text>
+        </TouchableOpacity>
         <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity
             style={styles.button}
@@ -44,21 +64,40 @@ function ChangeProfile(){
 }
 
 function UploadScreen({navigation}){
+  showPicker=()=>{
+    const options={
+      title:'사진 추가',
+      takePhotoButtonTitle: '카메라',
+      chooseFromLibraryButtonTitle:'이미지 선택',
+      cancelButtonTitle: '취소',
+      storageOptions:{
+        skipBackup: true, 
+        path: 'images',
+      }
+    };
+    ImagePicker.showImagePicker(options,(response) => {
+      const uri = {uri: response.uri};
+      this.setState({img:uri});
+    })
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
         <TextInput style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
         <TouchableOpacity 
           style={styles.button}
-          // onPress={() => }
-        >
-          <Text style={styles.text}>갤러리</Text>
+          onPress={showPicker}>
+          <Text style={styles.text}>사진 추가</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => navigation.navigate('CameraScreen')}
-        >
-          <Text style={styles.text}>카메라</Text>
+          onPress={showPicker}>
+          <Text style={styles.text}>사진 추가</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={showPicker}>
+          <Text style={styles.text}>사진 추가</Text>
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.button}
@@ -70,7 +109,7 @@ function UploadScreen({navigation}){
         </TouchableOpacity>
         
     </View>
-  )
+  )       
 }
 
 function FirstTabScreen({navigation}) {
@@ -144,7 +183,7 @@ const FirstTabStack = createStackNavigator();
 function FirstTabStackScreen() {
   return (
     <FirstTabStack.Navigator>
-      <FirstTabStack.Screen name="FirstTabScreen" component={FirstTabScreen} />
+      <FirstTabStack.Screen name="FirstTabScreen" component={FirstTabScreen} options={{headerShown: false}}/>
     </FirstTabStack.Navigator>
   );
 }
@@ -153,7 +192,7 @@ const SecondTabStack = createStackNavigator();
 function SecondTabStackScreen() {
   return (
     <SecondTabStack.Navigator>
-      <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} />
+      <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} options={{headerShown: false}}/>
     </SecondTabStack.Navigator>
   );
 }
@@ -162,10 +201,9 @@ const ThirdTabStack = createStackNavigator();
 function ThirdTabStackScreen() {
   return (
     <ThirdTabStack.Navigator>
-      <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} />
-      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} />
-      <ThirdTabStack.Screen name="Upload" component={UploadScreen} />
-      <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} />
+      <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
+      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{headerShown: false}}/>
+      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{headerShown: false}}/>
     </ThirdTabStack.Navigator>
   );
 }
@@ -174,8 +212,8 @@ function ThirdTabStackScreen() {
   function FourthTabStackScreen() {
     return (
       <FourthTabStack.Navigator>
-        <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} />
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} />
+        <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
+        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown: false}}/>
         <FourthTabStack.Screen name="Login" component={LoginComponent}/>
       </FourthTabStack.Navigator>
     );
@@ -205,6 +243,7 @@ export default function App() {
           },
           initialRouteName: "SecondTabScreen",
           swipeEnabled: true,
+          headerShown: false,
           tabBarPosition: 'bottom',
           lazy: false,
         })}
@@ -259,6 +298,13 @@ const styles = StyleSheet.create({
   }
 });
   
+const options = {
+  title: '사진 고르기',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
 
 handleProfileSubmit = async function(){
   const {email, nickname, profileImage, aboutMe} = this.state;
