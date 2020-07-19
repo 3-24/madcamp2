@@ -29,7 +29,12 @@ class SignUp extends Component{
                     password: password
                 })
               })
-              .then((response)=>this.state.code=response.json().code);
+              .then((response) => response.json())
+              .then((json)=>{
+                  this.state.code=json.code;
+                  if (this.state.code === 200) alert("Signup success");
+                  else alert("Signup failed");
+                });
         }
     }
 

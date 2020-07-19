@@ -11,21 +11,6 @@ import {
   statusCodes,
 } from '@react-native-community/google-signin';
 
-/* Fetch function for google signin */
-function _fetch_google_signin(state){
-  fetch('http://192.249.19.242:8480/google_signin', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      idToken: state.userInfo.idToken,
-      serverAuthCode: state.userInfo.serverAuthCode
-    })
-  });
-};
-
 
 class LoginComponent extends Component {
 
@@ -33,7 +18,8 @@ class LoginComponent extends Component {
       super(props);
       this.state = {
         pushData: [],
-        loggedIn: false
+        email: '',
+        password: ''
       }
     }
 
@@ -50,9 +36,18 @@ class LoginComponent extends Component {
       try {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
-        this.setState({ userInfo: userInfo, loggedIn: true });
-        console.log(userInfo);
-        _fetch_google_signin(this.state);
+        fetch('http://192.249.19.242:8480/google_signin', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            idToken: userInfo.idToken,
+          })
+        })
+        
+        ;
       } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
@@ -65,13 +60,37 @@ class LoginComponent extends Component {
         }
       }
     };
+
+    handleSubmit = function(){
+      const {email, password} = this.state;
+      fetch('http://192.249.19.242:8480/anon_signin', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+      .then((response)=>response.json())
+      .then((json)=>{
+        this.state.code = json.code;
+        if(this.state.code === 200) alert("Signin success");
+        else alert("Check ID and password");
+      })
+    }
     
     render(){
     return(
       <View style={styles.container}>
-        <TextInput style={styles.inputbox} placeholder="ID"/>
-        <TextInput style={styles.inputbox} placeholder="password"/>
-        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Main')} >
+        <TextInput style={styles.inputbox} placeholder="Email" onChangeText={(input)=>this.setState({email:input})}/>
+        <TextInput secureTextEntry={true}
+          style={styles.inputbox}
+          placeholder="password"
+          onChangeText={(input)=>this.setState({password: input})}/>
+        <TouchableOpacity style={styles.button} onPress={() => this.handleSubmit()} >
           <Text>LOGIN!</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
