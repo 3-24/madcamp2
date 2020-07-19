@@ -1,49 +1,78 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-//import { createMaterialTopTabNavigator } from "react-navigation-tabs";
  import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TextInput } from "react-native-gesture-handler";
+import { Input } from "react-native-elements";
+import LoginComponent from './LoginComponent';
+import CameraScreen from './CameraScreen';
+import CameraRoll from '@react-native-community/cameraroll'
+
 var profile_image = require('./asset/profile_image.jpg')
 function ChangePassword(){
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="기존 비밀번호"/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호"/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인"/>
+        <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
+        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
+        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => Alert.alert('비밀번호가 변경되었습니다.')}>
+            onPress={() => handleChangePassword()}>
             <Text style={styles.text}>확인</Text>
         </TouchableOpacity>
     </View>
   )
 }
+
+
 function ChangeProfile(){
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="아이디"/>
-        <TextInput style={styles.inputbox} placeholder="프로필 사진"/>
-        <TextInput style={styles.inputbox} placeholder="소개글"/>
+        <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
+        <TextInput style={styles.inputbox} placeholder="프로필 사진" onChangeText={(input) => this.setState({profileImage: input})}/>
+        <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => Alert.alert('회원정보가 변경되었습니다.')}>
+            onPress={() => handleProfileSubmit()}>
             <Text style={styles.text}>확인</Text>
         </TouchableOpacity>
 
     </View>
   )
 }
-function Upload(){
+
+function UploadScreen({navigation}){
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <Text style={{color:'#fff'}}>안녕하세요</Text>
-
+        <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
+        <TextInput style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
+        <TouchableOpacity 
+          style={styles.button}
+          // onPress={() => }
+        >
+          <Text style={styles.text}>갤러리</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => navigation.navigate('CameraScreen')}
+        >
+          <Text style={styles.text}>카메라</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            style={styles.button}
+            onPress={() => Alert.alert('업로드 하시겠습니까?', null, [
+              { text: '취소', onPress: () => navigation.navigate('ThirdTabScreen')},
+              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+            ])}>
+            <Text style={styles.text}>업로드</Text>
+        </TouchableOpacity>
+        
     </View>
   )
 }
+
 function FirstTabScreen({navigation}) {
   return (
     <View style={{flex: 1,backgroundColor: '#120824'}}>
@@ -54,16 +83,11 @@ function FirstTabScreen({navigation}) {
 function SecondTabScreen({navigation}) {
   return (
     <View style={{flex: 1, backgroundColor: '#120824'}}>
-        <TouchableOpacity 
-            style={{flex: 1, backgroundColor: "#120824", padding: 15,  alignItems: 'flex-end'}}
-            onPress={() => navigation.navigate('Upload')}
-        >
-            <Text style={{color: "#fff"}}>업로드</Text>
-        </TouchableOpacity>
     </View>
   );
 }
 function ThirdTabScreen({navigation}) {
+  
   return (
     <View style={{flex: 1,backgroundColor: '#120824'}}>
         <TouchableOpacity 
@@ -71,6 +95,12 @@ function ThirdTabScreen({navigation}) {
             onPress={() => navigation.navigate('ChangeProfile')}
         >
             <Text style={{color: "#fff"}}>회원정보 수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+            style={{backgroundColor: "#120824", padding: 15,  alignItems: 'flex-end'}}
+            onPress={() => navigation.navigate('Upload')}
+        >
+            <Text style={{color: "#fff"}}>업로드</Text>
         </TouchableOpacity>
         <Text style={{color: "#fff", padding: 5}}>RandomID</Text>
         <Image
@@ -85,7 +115,10 @@ function FourthTabScreen({navigation}) {
     <View style={{ backgroundColor: '#120824'}}>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => Alert.alert('테마를 변경하시겠습니까?')}>
+            onPress={() => Alert.alert('테마를 변경하시겠습니까?', null, [
+              { text: '취소', onPress: () => console.log('Cancel Pressed!')},
+              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+            ])}>
             <Text style={styles.text}>테마 변경</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -95,7 +128,10 @@ function FourthTabScreen({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => Alert.alert('로그아웃 하시겠습니까?')}>
+            onPress={() => Alert.alert('로그아웃 하시겠습니까?', null, [
+              { text: '취소', onPress: () => console.log('Cancel Pressed!')},
+              { text: '확인', onPress: () => navigation.navigate('Login')},
+            ])}>
             <Text style={styles.text}>로그아웃</Text>
         </TouchableOpacity>
         <Text style={{color: "#fff", fontSize:10, textAlign: "center"}}>Made by Yeongsuk, Jeanne @2020</Text>
@@ -118,7 +154,6 @@ function SecondTabStackScreen() {
   return (
     <SecondTabStack.Navigator>
       <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} />
-      <SecondTabStack.Screen name="Upload" component={Upload} />
     </SecondTabStack.Navigator>
   );
 }
@@ -129,6 +164,8 @@ function ThirdTabStackScreen() {
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} />
       <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} />
+      <ThirdTabStack.Screen name="Upload" component={UploadScreen} />
+      <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} />
     </ThirdTabStack.Navigator>
   );
 }
@@ -139,6 +176,7 @@ function ThirdTabStackScreen() {
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} />
         <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} />
+        <FourthTabStack.Screen name="Login" component={LoginComponent}/>
       </FourthTabStack.Navigator>
     );
   }
@@ -150,7 +188,7 @@ export default function App() {
     <NavigationContainer independent = {true}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ focused, color }) => {
 
             let iconName;
             
@@ -200,6 +238,11 @@ const styles = StyleSheet.create({
       marginBottom: 10
 
   },
+  cameraButton: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'pink'
+  },
   text: {
       color: "#fff"
   },
@@ -209,4 +252,63 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 10,
   },
+  preview: {
+    flex:1,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  }
 });
+  
+
+handleProfileSubmit = async function(){
+  const {email, nickname, profileImage, aboutMe} = this.state;
+  fetch('http://192.249.19.242:8480/profile', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      //email은 현재 로그인된 계정의 이메일을 받아와야할 것 같은데 받아오는게 되나..??
+      //email보내는 이유는 그 사람 계정인거를 확인하려구!
+      email: email,
+      nickname: nickname,
+      profileImage: profileImage,
+      aboutMe: aboutMe
+    })
+  })
+  .then((response)=>response.json())
+  .then((json)=>{
+    this.state.code = json.code;
+    if(this.state.code === 200) alert("회원정보를 수정하였습니다.", null, [
+      { text: '확인', onPress: () => navigation.navigate('ThirdTabScreen')}]);
+    else alert("오류");
+    //무슨 오류가 생길지는 아직 생각이 안남
+  })
+}
+
+handleChangePassword = async function(){
+  const {email, originalPassword, newPassword, checkNewPassword} = this.state;
+  fetch('http://192.249.19.242:8480/profile', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: email,
+      //email보내는 이유는 그 사람 계정인거를 확인하려구!
+      originalPassword: originalPassword,
+      newPassword: newPassword,
+      checkNewPassword: checkNewPassword
+    })
+  })
+  .then((response)=>response.json())
+  .then((json)=>{
+    this.state.code = json.code;
+    if(this.state.code === 200) alert("비밀번호가 변경되었습니다.", null, [
+      { text: '확인', onPress: () => navigation.navigate('FourthTabScreen')}]);
+    else if (this.state.code === 400) alert("기존 비밀번호가 일치하지 않습니다.");
+    else if (this.state.code === 401) alert("비밀번호 확인이 일치하지 않습니다.");
+  })
+}

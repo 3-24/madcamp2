@@ -11,6 +11,10 @@ target 'madcamp2' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
   target 'madcamp2Tests' do
     inherit! :complete
     # Pods for testing

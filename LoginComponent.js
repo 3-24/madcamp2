@@ -10,7 +10,7 @@ function LoginComponent({navigation}) {
             <View style={styles.container}>
             <TextInput style={styles.inputbox} placeholder="ID"/>
             <TextInput style={styles.inputbox} placeholder="password"/>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')} >
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('밤편지')} >
             <Text>LOGIN!</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')} >
@@ -24,10 +24,10 @@ const Stack = createStackNavigator();
 
 function StartUp() {
     return (
-      <NavigationContainer>
+      <NavigationContainer independent = {true}>
         <Stack.Navigator initialRouteName="PreLogin">
-          <Stack.Screen name="Login" component={LoginComponent} />
-          <Stack.Screen name="Main" component={App}/>
+          <Stack.Screen name="Login" component={LoginComponent}/>
+          <Stack.Screen name="밤편지" component={App} options={{headerStyle: {backgroundColor: '#120824'}, headerTintColor: '#fff'}}/>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>
       </NavigationContainer>
