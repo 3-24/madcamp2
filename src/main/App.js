@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,8 @@ import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview
 import faker from 'faker';
 
 var profile_image = require('../../asset/profile_image.jpg')
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 function ChangePassword(){
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
@@ -30,13 +32,42 @@ function ChangePassword(){
 
 
 function ChangeProfile(){
+  const [filePath, setfilePath] = useState(0);
+  chooseFile = () => {
+    var options = {
+      title: '사진 추가',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        let source = response.uri;
+        setfilePath({filePath: source});
+      }
+    });
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
         <TouchableOpacity 
-          style={styles.button}
-          onPress={() => navigation.navigate('CameraScreen')}>
-          <Text style={styles.text}>사진 변경</Text>
+          style={styles.camerabutton}
+          onPress={chooseFile}>
+          <Image
+          source={{uri: filePath.filePath}}
+          style={{ width: 250, height: 250 }}
+          />
+          <Text style={{ alignItems: 'center', color:'#fff' }}>
+            사진 변경
+          </Text>
         </TouchableOpacity>
         <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity
@@ -51,7 +82,6 @@ function ChangeProfile(){
 
 function UploadScreen({navigation}){
   const [filePath, setfilePath] = useState(0);
-  //const {filePath} = this.state;
   chooseFile = () => {
     var options = {
       title: '사진 추가',
@@ -103,18 +133,113 @@ function UploadScreen({navigation}){
 }
 
 function FirstTabScreen({navigation}) {
+  const fakeData = [];
+  for(i = 0; i < 100; i += 1) {
+    fakeData.push({
+      type: 'NORMAL',
+      item: {
+        id: 1,
+        image: faker.image.avatar(),
+        name: faker.name.firstName(),
+        description: faker.random.words(5),
+      },
+    });
+  }
+  state = {
+    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(fakeData),
+  };
+  layoutProvider = new LayoutProvider((i) => {
+    return state.list.getDataForIndex(i).type;
+  }, (type, dim) => {
+    switch (type) {
+      case 'NORMAL': 
+        dim.width = SCREEN_WIDTH;
+        dim.height = 100;
+        break;
+      default: 
+        dim.width = 0;
+        dim.height = 0;
+        break;
+      };
+    })
+  
+  rowRenderer = (type, data) => {
+    const { image, name, description } = data.item;
+    return (
+      <View style={styles.listItem}>
+        <Image style={styles.image} source={{ uri: image }} />
+        <View style={styles.body}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+      </View>
+    )
+  }
   return (
     <View style={{flex: 1,backgroundColor: '#120824'}}>
-        <Text>This Tab is First</Text>
+        <RecyclerListView 
+        style={{flex: 1}}
+        rowRenderer={rowRenderer}
+        dataProvider={state.list}
+        layoutProvider={layoutProvider}/>
     </View>
   );
 }
+
 function SecondTabScreen({navigation}) {
+  const fakeData = [];
+  for(i = 0; i < 100; i += 1) {
+    fakeData.push({
+      type: 'NORMAL',
+      item: {
+        id: 1,
+        image: faker.image.avatar(),
+        name: faker.name.firstName(),
+        description: faker.random.words(5),
+      },
+    });
+  }
+  state = {
+    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(fakeData),
+  };
+  layoutProvider = new LayoutProvider((i) => {
+    return state.list.getDataForIndex(i).type;
+  }, (type, dim) => {
+    switch (type) {
+      case 'NORMAL': 
+        dim.width = SCREEN_WIDTH;
+        dim.height = 100;
+        break;
+      default: 
+        dim.width = 0;
+        dim.height = 0;
+        break;
+      };
+    })
+  
+  rowRenderer = (type, data) => {
+    const { image, name, description } = data.item;
+    return (
+      <View style={styles.listItem}>
+        <Image style={styles.image} source={{ uri: image }} />
+        <View style={styles.body}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+      </View>
+    )
+  }
   return (
-    <View style={{flex: 1, backgroundColor: '#120824'}}>
+    <View style={{flex: 1, backgroundColor: '#120824', minHeight: 1, minWidth: 1}}>
+      <RecyclerListView 
+        style={{flex: 1}}
+        rowRenderer={rowRenderer}
+        dataProvider={state.list}
+        layoutProvider={layoutProvider}/>
     </View>
   );
 }
+
 function ThirdTabScreen({navigation}) {
   
   return (
@@ -192,8 +317,8 @@ function ThirdTabStackScreen() {
   return (
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
-      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{headerShown: false}}/>
-      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{headerShown: false}}/>
+      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#888' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
+      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '업로드', headerStyle:{ backgroundColor: '#888'}, headerTitleStyle:{fontWeight: 'bold'}}}/>
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
         {/* {()=><CameraScreen filePath={this.filePath}/>} */}
       </ThirdTabStack.Screen>
@@ -206,7 +331,7 @@ function ThirdTabStackScreen() {
     return (
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown: false}}/>
+        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#888' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
         <FourthTabStack.Screen name="Login" component={LoginComponent}/>
       </FourthTabStack.Navigator>
     );
@@ -278,7 +403,7 @@ const styles = StyleSheet.create({
   },
   inputbox : {
     borderColor: 'gray',
-    backgroundColor: '#fff',
+    backgroundColor: '#adacac',
     borderWidth: 1,
     paddingLeft: 10,
   },
