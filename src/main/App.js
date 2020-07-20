@@ -1,5 +1,5 @@
 import React, {Component, useState} from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponentm } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -60,6 +60,22 @@ function UploadScreen({navigation}){
       }
     });
   };
+
+  handleMainSubmit = async function(title, content, imageUri){
+    var formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('content', content);
+    formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'testPhotoName'});
+    fetch('http://192.249.19.242:8480/mainSubmit',{
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "multipart/form-data"
+      },
+      body: formData
+    })
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
@@ -78,8 +94,8 @@ function UploadScreen({navigation}){
         <TouchableOpacity
             style={styles.button}
             onPress={() => Alert.alert('업로드 하시겠습니까?', null, [
-              { text: '취소', onPress: () => navigation.navigate('ThirdTabScreen')},
-              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+              { text: '취소'},
+              { text: '확인', onPress: () => handleMainSubmit('title', 'content' , filePath.filePath)},
             ])}>
             <Text style={styles.text}>업로드</Text>
         </TouchableOpacity>
@@ -204,7 +220,7 @@ const Tab = createBottomTabNavigator();
 export default class App extends Component{
   constructor(props){
     super(props);
-    email =  this.props.getEmail()
+    this.email =  this.props.getEmail()
   }
 
   render(){
