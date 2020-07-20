@@ -183,7 +183,8 @@ function ThirdTabStackScreen() {
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function App(props) {
+  console.log(props.getEmail());
   return (
     <NavigationContainer independent = {true}>
       <Tab.Navigator
