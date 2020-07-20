@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ImageBackground, Image, StyleSheet, Animated} from 'react-native';
+import { ImageBackground, Image, StyleSheet, Animated, StatusBar} from 'react-native';
 
 var bg = require('../../asset/star_background.png')
 var img_logo=require('../../asset/new_moon_logo.png');
@@ -37,6 +37,7 @@ class SplashScreen extends React.Component {
                     <Image source = {img_logo}
                             style={{height: 80, width: 80, justifyContent: 'center', alignItems: 'center', marginTop: 50}}/>
                 </Animated.View>
+                <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
             </ImageBackground>
         ) 
     }
