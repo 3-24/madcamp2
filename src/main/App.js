@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,35 +7,21 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TextInput } from "react-native-gesture-handler";
 import { Input } from "react-native-elements";
 import LoginComponent from '../login/LoginScreen';
+import CameraScreen from './CameraScreen'
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import ChangePassword from "./ChangePassword"; 
+
 var profile_image = require('../../asset/profile_image.jpg')
 
 
 function ChangeProfile(){
-  showPicker=()=>{
-    const options={
-      title:'사진 추가',
-      takePhotoButtonTitle: '카메라',
-      chooseFromLibraryButtonTitle:'이미지 선택',
-      cancelButtonTitle: '취소',
-      storageOptions:{
-        skipBackup: true, 
-        path: 'images',
-      }
-    };
-    ImagePicker.showImagePicker(options,(response) => {
-      const uri = {uri: response.uri};
-      this.setState({img:uri});
-    })
-  };
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
         <TouchableOpacity 
           style={styles.button}
-          onPress={showPicker}>
+          onPress={() => navigation.navigate('CameraScreen')}>
           <Text style={styles.text}>사진 변경</Text>
         </TouchableOpacity>
         <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
@@ -50,40 +36,44 @@ function ChangeProfile(){
 }
 
 function UploadScreen({navigation}){
-  showPicker=()=>{
-    const options={
-      title:'사진 추가',
-      takePhotoButtonTitle: '카메라',
-      chooseFromLibraryButtonTitle:'이미지 선택',
-      cancelButtonTitle: '취소',
-      storageOptions:{
-        skipBackup: true, 
+  const [filePath, setfilePath] = useState(0);
+  //const {filePath} = this.state;
+  chooseFile = () => {
+    var options = {
+      title: '사진 추가',
+      storageOptions: {
+        skipBackup: true,
         path: 'images',
-      }
+      },
     };
-    ImagePicker.showImagePicker(options,(response) => {
-      const uri = {uri: response.uri};
-      this.setState({img:uri});
-    })
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        let source = response.uri;
+        setfilePath({filePath: source});
+      }
+    });
   };
   return (
     <View style={{flex: 1, backgroundColor: '#120814'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
         <TextInput style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
         <TouchableOpacity 
-          style={styles.button}
-          onPress={showPicker}>
-          <Text style={styles.text}>사진 추가</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={showPicker}>
-          <Text style={styles.text}>사진 추가</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={showPicker}>
-          <Text style={styles.text}>사진 추가</Text>
+          style={styles.camerabutton}
+          onPress={chooseFile}>
+          <Image
+          source={{uri: filePath.filePath}}
+          style={{ width: 250, height: 250 }}
+          />
+          <Text style={{ alignItems: 'center', color:'#fff' }}>
+            사진 추가
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.button}
@@ -190,6 +180,9 @@ function ThirdTabStackScreen() {
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
       <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{headerShown: false}}/>
       <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{headerShown: false}}/>
+      <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
+        {/* {()=><CameraScreen filePath={this.filePath}/>} */}
+      </ThirdTabStack.Screen>
     </ThirdTabStack.Navigator>
   );
 }
@@ -274,9 +267,7 @@ const styles = StyleSheet.create({
 
   },
   cameraButton: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'pink'
+    backgroundColor: "#fff"
   },
   text: {
       color: "#fff"
