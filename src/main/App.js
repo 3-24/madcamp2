@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,22 +9,8 @@ import { Input } from "react-native-elements";
 import LoginComponent from '../login/LoginScreen';
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
-
+import ChangePassword from "./ChangePassword"; 
 var profile_image = require('../../asset/profile_image.jpg')
-function ChangePassword(){
-  return (
-    <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleChangePassword()}>
-            <Text style={styles.text}>확인</Text>
-        </TouchableOpacity>
-    </View>
-  )
-}
 
 
 function ChangeProfile(){
@@ -209,20 +195,26 @@ function ThirdTabStackScreen() {
 }
   const FourthTabStack = createStackNavigator();
 
-  function FourthTabStackScreen() {
+  function FourthTabStackScreen(props) {
     return (
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="Login" component={LoginComponent}/>
+        <FourthTabStack.Screen name="ChangePassword" options={{headerShown: false}}>
+          {()=><ChangePassword email={props.email}/>} 
+        </FourthTabStack.Screen>
       </FourthTabStack.Navigator>
     );
   }
 
 const Tab = createBottomTabNavigator();
 
-export default function App(props) {
-  console.log(props.getEmail());
+export default class App extends Component{
+  constructor(props){
+    super(props);
+    email =  this.props.getEmail()
+  }
+
+  render(){
   return (
     <NavigationContainer independent = {true}>
       <Tab.Navigator
@@ -262,11 +254,14 @@ export default function App(props) {
             <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
             <Tab.Screen name="ThirdTabScreen" component={ThirdTabStackScreen}/>
-            <Tab.Screen name="FourthTabScreen" component={FourthTabStackScreen}/>
+            <Tab.Screen name="FourthTabScreen">
+              {()=><FourthTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
 
       </Tab.Navigator>  
     </NavigationContainer>
   );
+  }
 }
 const styles = StyleSheet.create({
   button: {
@@ -331,31 +326,5 @@ handleProfileSubmit = async function(){
       { text: '확인', onPress: () => navigation.navigate('ThirdTabScreen')}]);
     else alert("오류");
     //무슨 오류가 생길지는 아직 생각이 안남
-  })
-}
-
-handleChangePassword = async function(){
-  const {email, originalPassword, newPassword, checkNewPassword} = this.state;
-  fetch('http://192.249.19.242:8480/profile', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      //email보내는 이유는 그 사람 계정인거를 확인하려구!
-      originalPassword: originalPassword,
-      newPassword: newPassword,
-      checkNewPassword: checkNewPassword
-    })
-  })
-  .then((response)=>response.json())
-  .then((json)=>{
-    this.state.code = json.code;
-    if(this.state.code === 200) alert("비밀번호가 변경되었습니다.", null, [
-      { text: '확인', onPress: () => navigation.navigate('FourthTabScreen')}]);
-    else if (this.state.code === 400) alert("기존 비밀번호가 일치하지 않습니다.");
-    else if (this.state.code === 401) alert("비밀번호 확인이 일치하지 않습니다.");
   })
 }
