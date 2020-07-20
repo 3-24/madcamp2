@@ -67,7 +67,7 @@ class StartUp extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login">
-            {(props)=><LoginComponent {...props} handler={this.props.handler}/>}
+            {()=><LoginComponent handler={this.props.handler}/>}
             </Stack.Screen>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>
