@@ -15,7 +15,7 @@ class LoginComponent extends Component {
 
     handleSubmit = function(){
       const {email, password} = this.state;
-      fetch('http://192.249.19.242:8480/anon_signin', {
+      fetch('http://192.249.19.244:1380/anon_signin', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -68,7 +68,7 @@ class StartUp extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login">
-            {()=><LoginComponent changeEmail={this.props.changeEmail} handler={this.props.handler}/>}
+            {(props)=><LoginComponent  navigation={props.navigation} changeEmail={this.props.changeEmail} handler={this.props.handler}/>}
             </Stack.Screen>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>

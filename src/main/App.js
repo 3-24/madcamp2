@@ -12,7 +12,6 @@ import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import ChangePassword from "./ChangePassword"; 
 import faker from 'faker';
-import Daytheme from './DayTheme';
 
 var profile_image = require('../../asset/profile_image.jpg')
 var bg = require('../../asset/night_background.jpg')
@@ -161,7 +160,7 @@ function UploadScreen({navigation}){
     // formData.append('title', title);
     // formData.append('content', content);
     formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'testPhotoName'});
-    fetch('http://192.249.19.242:8480/mainSubmit',{
+    fetch('http://192.249.19.244:1380/mainSubmit',{
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -595,7 +594,7 @@ const options = {
 
 handleProfileSubmit = async function(){
   const {email, nickname, profileImage, aboutMe} = this.state;
-  fetch('http://192.249.19.242:8480/profile', {
+  fetch('http://192.249.19.244:1380/profile', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
