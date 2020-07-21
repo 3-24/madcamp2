@@ -88,64 +88,85 @@ function AddFriend(props){
   )
 }
 
-function FirstTabScreen({navigation}) {
-  const userData = [];
-  for(i = 0; i < 100; i += 1) {
-    userData.push({
-      type: 'NORMAL',
-      item: {
-        id: 1,
-        image: faker.image.avatar(),
-        name: faker.name.firstName(),
-        description: faker.random.words(5),
+class FirstTabScreen extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      dataProvider: new DataProvider((r1,r2)=>r1 !== r2)
+    }
+    this.layoutProvider = new LayoutProvider(() => {return 0;},
+     (type, dim) => {
+          dim.width = SCREEN_WIDTH;
+          dim.height = 100;
+      });
+    
+    this.rowRenderer = (type, data) => {
+      const { image, name, description } = data.item;
+      return (
+        <View style={styles.listItem}>
+          <Image style={styles.image} source={{ uri: 'http://192.249.19.244:1380/image/'+image }} />
+          <View style={styles.body, {borderBottomColor: '#fff', borderBottomWidth: 0.5, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.description}>{description}</Text>
+          </View>
+        </View>
+      )
+    }
+  }
+
+  componentWillMount(){
+    this.fetchFriendInfos();
+  }
+
+  fetchFriendInfos(){
+    const email = this.props.email;
+    fetch('http://192.249.19.244:1380/friend/info', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
+      body: JSON.stringify({
+        email:email
+      })
+    })
+    .then((response)=>response.json())
+    .then((json)=>{
+      if(json.code === 200){
+        var feed = json.result;
+        var feedData = [];
+        feed.forEach((data)=>{
+          feedData.push({
+            type: 'NORMAL',
+            item: {
+              image: data.profile_photo,
+              name: data.nickname,
+              description: data.intro
+            }
+          });
+        });
+        console.log(feedData);
+        this.setState({ dataProvider: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData)})
+      } else alert("목록 로딩 중 오류가 발생하였습니다.");
     });
   }
-  state = {
-    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(userData),
-  };
-  layoutProvider = new LayoutProvider((i) => {
-    return state.list.getDataForIndex(i).type;
-  }, (type, dim) => {
-    switch (type) {
-      case 'NORMAL': 
-        dim.width = SCREEN_WIDTH;
-        dim.height = 100;
-        break;
-      default: 
-        dim.width = 0;
-        dim.height = 0;
-        break;
-      };
-    })
-  
-  rowRenderer = (type, data) => {
-    const { image, name, description } = data.item;
-    return (
-      <View style={styles.listItem}>
-        <Image style={styles.image} source={{ uri: image }} />
-        <View style={styles.body, {borderBottomColor: '#fff', borderBottomWidth: 0.5, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.description}>{description}</Text>
-        </View>
-      </View>
-    )
-  }
+
+  render(){
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <TouchableOpacity 
             style={{backgroundColor: "#000", padding: 15,  alignItems:'flex-end'}}
-            onPress={() => navigation.navigate('AddFriend')}>
+            onPress={() => this.props.navigation.navigate('AddFriend')}>
           <Text style={{color: "#fff"}}>친구 추가</Text>
       </TouchableOpacity>
         <RecyclerListView 
         style={{flex: 1}}
-        rowRenderer={rowRenderer}
-        dataProvider={state.list}
-        layoutProvider={layoutProvider}/>
+        rowRenderer={this.rowRenderer}
+        dataProvider={this.state.dataProvider}
+        layoutProvider={this.layoutProvider}/>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
-  );
+  );}
 }
 
 class SecondTabScreen extends Component {
