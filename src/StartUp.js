@@ -15,7 +15,6 @@ class Start extends Component {
         this.loadingHandler = this.loadingHandler.bind(this);
         this.authHandler = this.authHandler.bind(this);
         this.changeEmail = this.changeEmail.bind(this);
-        this.getEmail = this.getEmail.bind(this);
     }
     
     loadingHandler(){
@@ -32,16 +31,12 @@ class Start extends Component {
         })
     }
 
-    getEmail(){
-        return this.state.email;
-    }
-
     render(){
         if (this.state.isLoading){
             return <SplashScreen handler={this.loadingHandler}/>;
         }
         if (this.state.isLogined){
-            return <App getEmail={this.getEmail}/>
+            return <App email={this.state.email}/>
         }
         else{
             return(

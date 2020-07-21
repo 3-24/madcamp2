@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,8 +10,9 @@ import LoginComponent from '../login/LoginScreen';
 import CameraScreen from './CameraScreen'
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
+import ChangePassword from "./ChangePassword"; 
+import ChangeProfile from "./ChangeProfile";
 import faker from 'faker';
-import Daytheme from './DayTheme';
 
 var profile_image = require('../../asset/profile_image.jpg')
 var bg = require('../../asset/night_background.jpg')
@@ -82,68 +83,6 @@ function AddFriend(){
   )
 }
 
-function ChangePassword(){
-  return (
-    <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => handleChangePassword()}>
-            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
-        </TouchableOpacity>
-    </View>
-  )
-}
-
-
-function ChangeProfile(){
-  const [filePath, setfilePath] = useState(0);
-  chooseFile = () => {
-    var options = {
-      title: '사진 추가',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else {
-        let source = response.uri;
-        setfilePath({filePath: source});
-      }
-    });
-  };
-  return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-        <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
-        <TouchableOpacity 
-          style={styles.camerabutton}
-          onPress={chooseFile}>
-          <Text style={{ alignItems: 'center', color:'#fff' }}>사진 변경</Text>
-          <Image
-          source={{uri: filePath.filePath}}
-          style={{ width: 250, height: 250 }}
-          />
-        </TouchableOpacity>
-        <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => handleProfileSubmit()}>
-            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
-        </TouchableOpacity>
-
-    </View>
-  )
-}
 
 function UploadScreen({navigation}){
   const [filePath, setfilePath] = useState(0);
@@ -169,6 +108,22 @@ function UploadScreen({navigation}){
       }
     });
   };
+
+  handleMainSubmit = async function(title, content, imageUri){
+    var formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('content', content);
+    formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'testPhotoName'});
+    fetch('http://192.249.19.244:1380/mainSubmit',{
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "multipart/form-data"
+      },
+      body: formData
+    })
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: '#000'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
@@ -184,8 +139,8 @@ function UploadScreen({navigation}){
         <TouchableOpacity
             style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
             onPress={() => Alert.alert('업로드 하시겠습니까?', null, [
-              { text: '취소', onPress: () => navigation.navigate('ThirdTabScreen')},
-              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+              { text: '취소'},
+              { text: '확인', onPress: () => handleMainSubmit('title', 'content' , filePath.filePath)},
             ])}>
             <Text style={{color: '#fff', fontSize: 20}}>업로드</Text>
         </TouchableOpacity>
@@ -443,11 +398,14 @@ function SecondTabStackScreen() {
 }
 const ThirdTabStack = createStackNavigator();
 
-function ThirdTabStackScreen() {
+function ThirdTabStackScreen(props) {
+  console.log(props.email);
   return (
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
-      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <ThirdTabStack.Screen name="ChangeProfile" options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
+        {()=><ChangeProfile email={props.email}/>}
+      </ThirdTabStack.Screen>
       <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#8985d6'}, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
         {/* {()=><CameraScreen filePath={this.filePath}/>} */}
@@ -457,21 +415,24 @@ function ThirdTabStackScreen() {
 }
   const FourthTabStack = createStackNavigator();
 
-  function FourthTabStackScreen() {
+  function FourthTabStackScreen(props) {
     return (
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
-        <FourthTabStack.Screen name="Login" component={LoginComponent}/>
-        {/* <FourthTabStack.Screen name="DayTheme" component={Daytheme}/> */}
+        <FourthTabStack.Screen name="ChangePassword" options={{headerShown: false}}>
+          {()=><ChangePassword email={props.email}/>} 
+        </FourthTabStack.Screen>
       </FourthTabStack.Navigator>
     );
   }
 
 const Tab = createBottomTabNavigator();
 
-export default function App(props) {
-  console.log(props.getEmail());
+export default class App extends Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
   return (
     <NavigationContainer independent = {true}>
       <Tab.Navigator
@@ -510,12 +471,17 @@ export default function App(props) {
           labelStyle:{fontSize:12}}}>
             <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
-            <Tab.Screen name="ThirdTabScreen" component={ThirdTabStackScreen}/>
-            <Tab.Screen name="FourthTabScreen" component={FourthTabStackScreen}/>
+            <Tab.Screen name="ThirdTabScreen">
+              {()=><ThirdTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
+            <Tab.Screen name="FourthTabScreen">
+              {()=><FourthTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
 
       </Tab.Navigator>  
     </NavigationContainer>
   );
+  }
 }
 const styles = StyleSheet.create({
   button: {
@@ -582,56 +548,3 @@ const options = {
     path: 'images',
   },
 };
-
-handleProfileSubmit = async function(){
-  const {email, nickname, profileImage, aboutMe} = this.state;
-  fetch('http://192.249.19.242:8480/profile', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      //email은 현재 로그인된 계정의 이메일을 받아와야할 것 같은데 받아오는게 되나..??
-      //email보내는 이유는 그 사람 계정인거를 확인하려구!
-      email: email,
-      nickname: nickname,
-      profileImage: profileImage,
-      aboutMe: aboutMe
-    })
-  })
-  .then((response)=>response.json())
-  .then((json)=>{
-    this.state.code = json.code;
-    if(this.state.code === 200) alert("회원정보를 수정하였습니다.", null, [
-      { text: '확인', onPress: () => navigation.navigate('ThirdTabScreen')}]);
-    else alert("오류");
-    //무슨 오류가 생길지는 아직 생각이 안남
-  })
-}
-
-handleChangePassword = async function(){
-  const {email, originalPassword, newPassword, checkNewPassword} = this.state;
-  fetch('http://192.249.19.242:8480/profile', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      //email보내는 이유는 그 사람 계정인거를 확인하려구!
-      originalPassword: originalPassword,
-      newPassword: newPassword,
-      checkNewPassword: checkNewPassword
-    })
-  })
-  .then((response)=>response.json())
-  .then((json)=>{
-    this.state.code = json.code;
-    if(this.state.code === 200) alert("비밀번호가 변경되었습니다.", null, [
-      { text: '확인', onPress: () => navigation.navigate('FourthTabScreen')}]);
-    else if (this.state.code === 400) alert("기존 비밀번호가 일치하지 않습니다.");
-    else if (this.state.code === 401) alert("비밀번호 확인이 일치하지 않습니다.");
-  })
-}

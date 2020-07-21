@@ -17,7 +17,7 @@ class SignUp extends Component{
         const {email, password, confirmPassword } = this.state;
         if (password !== confirmPassword) {alert("Passwords don't match");}
         else {
-            return fetch('http://192.249.19.242:8480/anon_signup', {
+            return fetch('http://192.249.19.244:1380/anon_signup', {
                 method: 'POST',
                 headers: {
                   Accept: 'application/json',
