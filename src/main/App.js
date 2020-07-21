@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
+import { TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground, ViewPropTypes } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -148,61 +148,83 @@ function FirstTabScreen({navigation}) {
   );
 }
 
-function SecondTabScreen({navigation}) {
-  const fakeData = [];
-  for(i = 0; i < 100; i += 1) {
-    fakeData.push({
-      type: 'NORMAL',
-      item: {
-        id: 1,
-        image: faker.image.avatar(),
-        name: faker.name.firstName(),
-        title: faker.random.word(),
-        description: faker.random.words(5),
-      },
-    });
-  }
-  state = {
-    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(fakeData),
-  };
-  layoutProvider = new LayoutProvider((i) => {
-    return state.list.getDataForIndex(i).type;
-  }, (type, dim) => {
-    switch (type) {
-      case 'NORMAL': 
-        dim.width = SCREEN_WIDTH;
-        dim.height = 400;
-        break;
-      default: 
-        dim.width = 0;
-        dim.height = 0;
-        break;
-      };
-    })
-  
-  rowRenderer = (type, data) => {
-    const { image, title, name, description } = data.item;
-    return (
-      <View style={{flexDirection: 'row', margin: 10, justifyContent: 'center'}}>
-        <View style = {{flexDirection: 'column', justifyContent: 'center'}}>
-          <Text style={{color: '#fff', fontSize: 15, fontWeight: 'bold', padding: 5}}>{name}</Text>
-          <Image style={{width: 300, height: 300}} source={{ uri: image }} />
-          <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+class SecondTabScreen extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      dataProvider: new DataProvider((r1,r2)=>r1 !== r2)
+    }
+    this.layoutProvider = new LayoutProvider(
+      () => {return 0;},  // only one view type
+      (type, dim) => {
+          dim.width = SCREEN_WIDTH;
+          dim.height = 400;
+      });
+    
+    this.rowRenderer = (type, data) => {
+      const { image, title, name, description } = data.item;
+      return (
+        <View style={{flexDirection: 'row', margin: 10, justifyContent: 'center'}}>
+          <View style = {{flexDirection: 'column', justifyContent: 'center'}}>
+            <Text style={{color: '#fff', fontSize: 15, fontWeight: 'bold', padding: 5}}>{name}</Text>
+            <Image style={{width: 300, height: 300}} source={{ uri: 'http://192.249.19.244:1380/image/'+image }} />
+            <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>{title}</Text>
+            <Text style={styles.description}>{description}</Text>
+          </View>
         </View>
-      </View>
-    )
+      )
+    }
   }
+
+  componentWillMount(){
+    this.fetchFeed();
+  }
+
+  fetchFeed = function(){
+    const email = this.props.email;
+    fetch('http://192.249.19.244:1380/feed', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email:email
+      })
+    })
+    .then((response)=>response.json())
+    .then((json)=>{
+      if(json.code === 200){
+        var feed = json.feed;
+        var feedData = [];
+        feed.forEach((data)=>{
+          feedData.push({
+            type: 'NORMAL',
+            item: {
+              image: data.photo1,
+              title: data.title,
+              name: data.email,
+              description:data.content
+            }
+          });
+        });
+        console.log(feedData);
+        this.setState({ dataProvider: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData)})
+      } else alert("피드 로딩 중 오류가 발생하였습니다.");
+    })
+  }
+
+  render(){
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <RecyclerListView 
         style={{flex: 1}}
-        rowRenderer={rowRenderer}
-        dataProvider={state.list}
-        layoutProvider={layoutProvider}/>
+        rowRenderer={this.rowRenderer}
+        dataProvider={this.state.dataProvider}
+        layoutProvider={this.layoutProvider}/>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
-  );
+  );}
 }
 
 class ThirdTabScreen extends Component {
@@ -211,41 +233,24 @@ class ThirdTabScreen extends Component {
     this.state = {
       imagePath: '',
       nickname: '',
-      intro: ''
+      intro: '',
+      dataProvider:  new DataProvider((r1, r2) => r1 !== r2),
     }
-    this.fakeData = [];
-    for(i = 0; i < 100; i += 1) {
-      this.fakeData.push({
-        type: 'NORMAL',
-        item: {
-          id: 1,
-          image: faker.image.avatar(),
-          title: faker.random.word(),
-          description: faker.random.words(5),
-        },
-      });
-    }
-    this.list = new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(this.fakeData);
+
     this.layoutProvider = new LayoutProvider(
-      (i) => {return state.list.getDataForIndex(i).type;},
+      () => {return 0;},  // only one view type
       (type, dim) => {
-      switch (type) {
-        case 'NORMAL': 
           dim.width = SCREEN_WIDTH;
           dim.height = 400;
-          break;
-        default: 
-          dim.width = 0;
-          dim.height = 0;
-          break;
-        };
       });
+    
     this.rowRenderer = (type, data) => {
       const { image, title, description } = data.item;
       return (
         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           <View style={{flexDirection: 'column'}}>
-            <Image style={{width: 300, height: 300, margin: 15}} source={{ uri: image }} />
+            <Image style={{width: 300, height: 300, margin: 15}}
+              source={{ uri: 'http://192.249.19.244:1380/image/'+image }} />
           {/* <View style={{marginLeft: 10, marginRight: 10, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}> */}
             <Text style={styles.name}>{title}</Text>
             <Text style={styles.description}>{description}</Text>
@@ -257,9 +262,44 @@ class ThirdTabScreen extends Component {
   }
 
   componentDidMount(){
-    this.fetchProfile()
+    this.fetchProfile();
   }
 
+  componentWillMount(){
+    this.fetchMyFeed();
+  }
+
+  fetchMyFeed = function (){
+    const email = this.props.email;
+    fetch('http://192.249.19.244:1380/myfeed', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email:email
+      })
+    })
+    .then((response)=>response.json())
+    .then((json)=>{
+      if(json.code === 200){
+        var feed = json.feed;
+        var feedData = [];
+        feed.forEach((data)=>{
+          feedData.push({
+            type: 'NORMAL',
+            item: {
+              image: data.photo1,
+              title: data.title,
+              description: data.content}
+          });
+        });
+        console.log(feedData);
+        this.state.dataProvider = new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData);
+      } else alert("피드 로딩 중 오류가 발생하였습니다.");
+    })
+  }
 
   /* Fetch profile information */
   fetchProfile(){
@@ -298,8 +338,7 @@ class ThirdTabScreen extends Component {
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity 
                 style={styles.nightThirdScreenButton}
-                onPress={() => this.props.navigation.navigate('ChangeProfile')}
-            >
+                onPress={() => this.props.navigation.navigate('ChangeProfile')}>
                 <Text style={{color: "#fff"}}>프로필 수정</Text>
               </TouchableOpacity>
               <TouchableOpacity 
@@ -313,7 +352,7 @@ class ThirdTabScreen extends Component {
       <RecyclerListView 
         style={{flex: 1}}
         rowRenderer={this.rowRenderer}
-        dataProvider={this.list}
+        dataProvider={this.state.dataProvider}
         layoutProvider={this.layoutProvider}/>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
@@ -370,10 +409,12 @@ function FirstTabStackScreen(props) {
 }
 const SecondTabStack = createStackNavigator();
 
-function SecondTabStackScreen() {
+function SecondTabStackScreen(props) {
   return (
     <SecondTabStack.Navigator>
-      <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} options={{ title: '밤편지', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{color: '#fff', fontWeight: 'bold'}}}/>
+      <SecondTabStack.Screen name="SecondTabScreen" options={{ title: '밤편지', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{color: '#fff', fontWeight: 'bold'}}}>
+      {()=><SecondTabScreen email={props.email}/>} 
+      </SecondTabStack.Screen>
     </SecondTabStack.Navigator>
   );
 }
@@ -459,7 +500,9 @@ export default class App extends Component{
             <Tab.Screen name="FirstTabScreen">
               {()=><FirstTabStackScreen email={this.props.email}/>}
             </Tab.Screen>
-            <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
+            <Tab.Screen name="SecondTabScreen">
+              {()=><SecondTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
             <Tab.Screen name="ThirdTabScreen">
               {()=><ThirdTabStackScreen email={this.props.email}/>}
             </Tab.Screen>
