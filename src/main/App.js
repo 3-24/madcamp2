@@ -374,16 +374,15 @@ class ThirdTabScreen extends Component {
   }
 
   render(){
-    console.log(this.props.email);
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-      <Text style={{color: "#fff", padding: 5, fontSize: 30, padding: 10}}>RandomID</Text>
+      <Text style={{color: "#fff", padding: 5, fontSize: 30, padding: 10}}>{this.state.nickname}</Text>
       <View style={{flex:0.6, flexDirection: 'row', borderBottomColor: '#fff', borderBottomWidth: 0.5}}>
         <Image
             style={{height:200, width:200, margin: 10}}
             source={{uri: 'http://192.249.19.244:1380/image/'+this.state.imagePath}}/>
           <View style={{flex:1, flexDirection: 'column'}}>
-            <Text style={{color: "#fff", padding: 5, fontSize: 15}}>안녕하세요 저는 22살 개발자이고요 과자와 고양이를 좋아합니다. 많이들 구경와주세요.</Text>
+            <Text style={{color: "#fff", padding: 5, fontSize: 15}}>{this.state.intro}</Text>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity 
                 style={styles.nightThirdScreenButton}
