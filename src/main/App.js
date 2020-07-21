@@ -11,6 +11,7 @@ import CameraScreen from './CameraScreen'
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import ChangePassword from "./ChangePassword"; 
+import ChangeProfile from "./ChangeProfile";
 import faker from 'faker';
 
 var profile_image = require('../../asset/profile_image.jpg')
@@ -82,53 +83,6 @@ function AddFriend(){
   )
 }
 
-
-function ChangeProfile(){
-  const [filePath, setfilePath] = useState(0);
-  chooseFile = () => {
-    var options = {
-      title: '사진 추가',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else {
-        let source = response.uri;
-        setfilePath({filePath: source});
-      }
-    });
-  };
-  return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-        <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
-        <TouchableOpacity 
-          style={styles.camerabutton}
-          onPress={chooseFile}>
-          <Text style={{ alignItems: 'center', color:'#fff' }}>사진 변경</Text>
-          <Image
-          source={{uri: filePath.filePath}}
-          style={{ width: 250, height: 250 }}
-          />
-        </TouchableOpacity>
-        <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => handleProfileSubmit()}>
-            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
-        </TouchableOpacity>
-
-    </View>
-  )
-}
 
 function UploadScreen({navigation}){
   const [filePath, setfilePath] = useState(0);
@@ -444,11 +398,14 @@ function SecondTabStackScreen() {
 }
 const ThirdTabStack = createStackNavigator();
 
-function ThirdTabStackScreen() {
+function ThirdTabStackScreen(props) {
+  console.log(props.email);
   return (
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
-      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <ThirdTabStack.Screen name="ChangeProfile" options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
+        {()=><ChangeProfile email={props.email}/>}
+      </ThirdTabStack.Screen>
       <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#8985d6'}, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
         {/* {()=><CameraScreen filePath={this.filePath}/>} */}
@@ -474,9 +431,7 @@ const Tab = createBottomTabNavigator();
 export default class App extends Component{
   constructor(props){
     super(props);
-    this.email =  this.props.getEmail()
   }
-
   render(){
   return (
     <NavigationContainer independent = {true}>
@@ -516,7 +471,9 @@ export default class App extends Component{
           labelStyle:{fontSize:12}}}>
             <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
-            <Tab.Screen name="ThirdTabScreen" component={ThirdTabStackScreen}/>
+            <Tab.Screen name="ThirdTabScreen">
+              {()=><ThirdTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
             <Tab.Screen name="FourthTabScreen">
               {()=><FourthTabStackScreen email={this.props.email}/>}
             </Tab.Screen>
@@ -591,30 +548,3 @@ const options = {
     path: 'images',
   },
 };
-
-handleProfileSubmit = async function(){
-  const {email, nickname, profileImage, aboutMe} = this.state;
-  fetch('http://192.249.19.244:1380/profile', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      //email은 현재 로그인된 계정의 이메일을 받아와야할 것 같은데 받아오는게 되나..??
-      //email보내는 이유는 그 사람 계정인거를 확인하려구!
-      email: email,
-      nickname: nickname,
-      profileImage: profileImage,
-      aboutMe: aboutMe
-    })
-  })
-  .then((response)=>response.json())
-  .then((json)=>{
-    this.state.code = json.code;
-    if(this.state.code === 200) alert("회원정보를 수정하였습니다.", null, [
-      { text: '확인', onPress: () => navigation.navigate('ThirdTabScreen')}]);
-    else alert("오류");
-    //무슨 오류가 생길지는 아직 생각이 안남
-  })
-}
