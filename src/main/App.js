@@ -293,71 +293,107 @@ function SecondTabScreen({navigation}) {
   );
 }
 
-function ThirdTabScreen({navigation}) {
-  const fakeData = [];
-  for(i = 0; i < 100; i += 1) {
-    fakeData.push({
-      type: 'NORMAL',
-      item: {
-        id: 1,
-        image: faker.image.avatar(),
-        title: faker.random.word(),
-        description: faker.random.words(5),
-      },
-    });
-  }
-  state = {
-    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(fakeData),
-  };
-  layoutProvider = new LayoutProvider((i) => {
-    return state.list.getDataForIndex(i).type;
-  }, (type, dim) => {
-    switch (type) {
-      case 'NORMAL': 
-        dim.width = SCREEN_WIDTH;
-        dim.height = 400;
-        break;
-      default: 
-        dim.width = 0;
-        dim.height = 0;
-        break;
-      };
-    })
-  
-  rowRenderer = (type, data) => {
-    const { image, title, description } = data.item;
-    return (
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-        <View style={{flexDirection: 'column'}}>
-          <Image style={{width: 300, height: 300, margin: 15}} source={{ uri: image }} />
-        {/* <View style={{marginLeft: 10, marginRight: 10, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}> */}
-          <Text style={styles.name}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+class ThirdTabScreen extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      imagePath: '',
+      nickname: '',
+      intro: ''
+    }
+    this.fakeData = [];
+    for(i = 0; i < 100; i += 1) {
+      this.fakeData.push({
+        type: 'NORMAL',
+        item: {
+          id: 1,
+          image: faker.image.avatar(),
+          title: faker.random.word(),
+          description: faker.random.words(5),
+        },
+      });
+    }
+    this.list = new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(this.fakeData);
+    this.layoutProvider = new LayoutProvider(
+      (i) => {return state.list.getDataForIndex(i).type;},
+      (type, dim) => {
+      switch (type) {
+        case 'NORMAL': 
+          dim.width = SCREEN_WIDTH;
+          dim.height = 400;
+          break;
+        default: 
+          dim.width = 0;
+          dim.height = 0;
+          break;
+        };
+      });
+    this.rowRenderer = (type, data) => {
+      const { image, title, description } = data.item;
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <View style={{flexDirection: 'column'}}>
+            <Image style={{width: 300, height: 300, margin: 15}} source={{ uri: image }} />
+          {/* <View style={{marginLeft: 10, marginRight: 10, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}> */}
+            <Text style={styles.name}>{title}</Text>
+            <Text style={styles.description}>{description}</Text>
+          </View>
+          {/* </View> */}
         </View>
-        {/* </View> */}
-      </View>
-    )
+      )
+    }
   }
+
+  componentDidMount(){
+    this.fetchProfile()
+  }
+
+
+  /* Fetch profile information */
+  fetchProfile(){
+    const email = this.props.email;
+    fetch('http://192.249.19.244:1380/profile/get', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email:email
+      })
+    })
+    .then((response)=>response.json())
+    .then((json)=>{
+      if(json.code === 200){
+        this.setState({imagePath:json.profile_photo});
+        this.setState({nickname:json.nickname});
+        this.setState({intro:json.intro});
+      }
+      else alert("프로필 로딩 중 오류가 발생하였습니다.");
+    })
+  }
+
+  render(){
+    console.log(this.props.email);
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <Text style={{color: "#fff", padding: 5, fontSize: 30, padding: 10}}>RandomID</Text>
       <View style={{flex:0.6, flexDirection: 'row', borderBottomColor: '#fff', borderBottomWidth: 0.5}}>
         <Image
             style={{height:200, width:200, margin: 10}}
-            source={profile_image}/>
+            source={{uri: 'http://192.249.19.244:1380/image/'+this.state.imagePath}}/>
           <View style={{flex:1, flexDirection: 'column'}}>
             <Text style={{color: "#fff", padding: 5, fontSize: 15}}>안녕하세요 저는 22살 개발자이고요 과자와 고양이를 좋아합니다. 많이들 구경와주세요.</Text>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity 
                 style={styles.nightThirdScreenButton}
-                onPress={() => navigation.navigate('ChangeProfile')}
+                onPress={() => this.props.navigation.navigate('ChangeProfile')}
             >
                 <Text style={{color: "#fff"}}>프로필 수정</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                   style={styles.nightThirdScreenButton}
-                  onPress={() => navigation.navigate('Upload')}
-              >
+                  onPress={() => this.props.navigation.navigate('Upload')}>
                   <Text style={{color: "#fff"}}>밤편지 쓰기</Text>
               </TouchableOpacity>
             </View>
@@ -365,12 +401,12 @@ function ThirdTabScreen({navigation}) {
       </View>
       <RecyclerListView 
         style={{flex: 1}}
-        rowRenderer={rowRenderer}
-        dataProvider={state.list}
-        layoutProvider={layoutProvider}/>
+        rowRenderer={this.rowRenderer}
+        dataProvider={this.list}
+        layoutProvider={this.layoutProvider}/>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
-  );
+  );}
 }
 
 function FourthTabScreen({navigation}) {
@@ -428,10 +464,11 @@ function SecondTabStackScreen() {
 const ThirdTabStack = createStackNavigator();
 
 function ThirdTabStackScreen(props) {
-  console.log(props.email);
   return (
     <ThirdTabStack.Navigator>
-      <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
+      <ThirdTabStack.Screen  name="ThirdTabScreen" options={{headerShown: false}}>
+        {(props1)=><ThirdTabScreen  email={props.email} navigation={props1.navigation}/> }
+      </ThirdTabStack.Screen>
       <ThirdTabStack.Screen name="ChangeProfile" options={{ title: '프로필 수정', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
         {()=><ChangeProfile email={props.email}/>}
       </ThirdTabStack.Screen>
