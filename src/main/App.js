@@ -238,14 +238,11 @@ class ThirdTabScreen extends Component {
   constructor(props){
     super(props);
     this.state = {
-      appTheme: themes.night,
       imagePath: '',
       nickname: '',
       intro: '',
       dataProvider:  new DataProvider((r1, r2) => r1 !== r2),
     };
-
-    this.changeTheme = this.changeTheme.bind(this);
 
     this.layoutProvider = new LayoutProvider(
       () => {return 0;},  // only one view type
@@ -268,12 +265,6 @@ class ThirdTabScreen extends Component {
       )
     }
   }
-
-  changeTheme() {
-    theme = this.state.appTheme === themes.night ? themes.day : themes.night;
-    this.setState({appTheme: theme});
-  }
-
   componentDidMount(){
     this.fetchProfile();
   }
@@ -569,13 +560,6 @@ export const styles = StyleSheet.create({
   nightInputbox : {
     borderColor: '#000',
     backgroundColor: '#fff',
-    borderWidth: 1,
-    paddingLeft: 10,
-  },
-  dayInputbox : {
-    borderColor: '#99b1d1',
-    backgroundColor: '#b1becf',
-    opacity: 0.3,
     borderWidth: 1,
     paddingLeft: 10,
   },
