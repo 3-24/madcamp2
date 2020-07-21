@@ -1,21 +1,16 @@
 import React, { Component, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
+import { TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TextInput } from "react-native-gesture-handler";
-import { Input } from "react-native-elements";
-import LoginComponent from '../login/LoginScreen';
 import CameraScreen from './CameraScreen'
-import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import ChangePassword from "./ChangePassword"; 
 import ChangeProfile from "./ChangeProfile";
 import UploadScreen from "./UploadScreen";
 import faker from 'faker';
 
-var profile_image = require('../../asset/profile_image.jpg')
 export var bg = require('../../asset/night_background.jpg')
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
