@@ -214,7 +214,7 @@ function FirstTabScreen({navigation}) {
     return (
       <View style={styles.listItem}>
         <Image style={styles.image} source={{ uri: image }} />
-        <View style={styles.body}>
+        <View style={styles.body, {borderBottomColor: '#fff', borderBottomWidth: 0.5, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
@@ -274,7 +274,7 @@ function SecondTabScreen({navigation}) {
     const { image, title, name, description } = data.item;
     return (
       <View style={{flexDirection: 'row', margin: 10, justifyContent: 'center'}}>
-        <View style = {{flexDirection: 'column', justifyContent: 'center'}}>
+        <View style = {{flexDirection: 'column', justifyContent: 'center', maxWidth: SCREEN_WIDTH - (80 + 10 + 20), borderBottomColor: '#fff', borderBottomWidth: 0.5}}>
           <Text style={{color: '#fff', fontSize: 15, fontWeight: 'bold', padding: 5}}>{name}</Text>
           <Image style={{width: 300, height: 300}} source={{ uri: image }} />
           <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>{title}</Text>
@@ -333,10 +333,9 @@ class ThirdTabScreen extends Component {
     this.rowRenderer = (type, data) => {
       const { image, title, description } = data.item;
       return (
-        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <View style={{flexDirection: 'column'}}>
+        <View style={{flexDirection: 'row', margin:10, justifyContent: 'center'}}>
+          <View style={{flexDirection: 'column', justifyContent: 'center', maxWidth: SCREEN_WIDTH - (80 + 10 + 20), borderBottomColor: '#fff', borderBottomWidth: 0.5}}>
             <Image style={{width: 300, height: 300, margin: 15}} source={{ uri: image }} />
-          {/* <View style={{marginLeft: 10, marginRight: 10, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}> */}
             <Text style={styles.name}>{title}</Text>
             <Text style={styles.description}>{description}</Text>
           </View>
@@ -587,7 +586,7 @@ export const styles = StyleSheet.create({
   nightInputbox : {
     borderColor: '#000',
     backgroundColor: '#fff',
-    opacity: 0.3,
+    // opacity: 0.3,
     borderWidth: 1,
     paddingLeft: 10,
   },
@@ -621,12 +620,15 @@ export const styles = StyleSheet.create({
   name: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginLeft: 5
   },
   description: {
     color: '#fff',
     fontSize: 14,
-    opacity: 0.8
+    opacity: 0.8,
+    marginLeft: 5,
+    margin: 10
   },
   listItem: {
     flexDirection: 'row',
@@ -639,7 +641,8 @@ export const styles = StyleSheet.create({
     alignItems:'flex-end', 
     justifyContent: 'flex-end', 
     marginTop: 10, 
-    marginBottom: 10, 
+    marginBottom: 10,
+    marginLeft: 5, 
     borderColor: '#fff', 
     borderWidth: 0.3
   },

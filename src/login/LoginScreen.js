@@ -52,12 +52,14 @@ class LoginComponent extends Component {
             placeholder="비밀번호"
             autoCapitalize='none'
             onChangeText={(input)=>this.setState({password: input})}/>
-          <TouchableOpacity style={{backgroundColor: '#000', width: "40%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.handleSubmit()} >
-            <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>로그인</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{backgroundColor: '#000', width: "40%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.props.navigation.navigate('Register')} >
-            <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>회원가입</Text>
-          </TouchableOpacity>
+            <View style={{flexDirection: 'row', justifyContent:'center'}}>
+              <TouchableOpacity style={{backgroundColor: '#00000080', width: "43.5%", padding: 5, alignItems: 'center', marginTop: 10, marginRight: 10}} onPress={() => this.handleSubmit()} >
+                <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>로그인</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor: '#00000080', width: "43.5%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.props.navigation.navigate('Register')} >
+                <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>회원가입</Text>
+              </TouchableOpacity>
+            </View>
         </View>
         <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#07111d'/>
       </ImageBackground>

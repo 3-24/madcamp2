@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TextInput, TouchableOpacity, Text, Image} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity, Text, Image, ImageBackground} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+var bg = require('../../asset/night_background.jpg');
 
 export default class ChangeProfile extends Component {
   constructor(props) {
@@ -80,14 +81,20 @@ export default class ChangeProfile extends Component {
   };
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#000'}}>
+      <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
         <TextInput
           autoCapitalize='none'
           style={styles.inputbox}
           placeholder="아이디"
           onChangeText={(input) => this.setState({nickname:input})}
         />
-        <TouchableOpacity style={styles.camerabutton}
+        <TextInput
+          autoCapitalize='none'
+          style={styles.inputbox}
+          placeholder="소개글"
+          onChangeText={(input) => this.setState({aboutMe:input})}
+        />
+        <TouchableOpacity style={{padding: 5}}
           onPress={()=>this.chooseFile()}>
           <Text style={{alignItems: 'center', color: '#fff'}}>사진 변경</Text>
           <Image
@@ -95,12 +102,6 @@ export default class ChangeProfile extends Component {
             style={{width: 250, height: 250}}
           />
         </TouchableOpacity>
-        <TextInput
-          autoCapitalize='none'
-          style={styles.inputbox}
-          placeholder="소개글"
-          onChangeText={(input) => this.setState({aboutMe:input})}
-        />
         <TouchableOpacity
           style={{
             backgroundColor: '#000',
@@ -111,7 +112,7 @@ export default class ChangeProfile extends Component {
           onPress={()=>this.handleProfileSubmit()}>
           <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
         </TouchableOpacity>
-      </View>
+      </ImageBackground>
     );
   }
 }
@@ -121,8 +122,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   inputbox: {
-    borderColor: '#fff',
-    backgroundColor: '#c2bfff',
+    borderColor: '#000',
+    backgroundColor: '#fff',
+    // opacity: 0.3,
     borderWidth: 1,
     paddingLeft: 10,
   },
