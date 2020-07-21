@@ -410,7 +410,7 @@ class ThirdTabScreen extends Component {
   );}
 }
 
-function FourthTabScreen({navigation}) {
+function FourthTabScreen(props) {
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
@@ -418,26 +418,26 @@ function FourthTabScreen({navigation}) {
             style={styles.nightFourthScreenButton}
             onPress={() => Alert.alert('테마를 변경하시겠습니까?', null, [
               { text: '취소', onPress: () => console.log('Cancel Pressed!')},
-              { text: '확인', onPress: () => navigation.navigate('DayTheme')},
+              { text: '확인', onPress: () => console.log('Change pressed!')},
               // navigation.navigate('Daytheme')
             ])}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>테마 변경</Text>
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.nightFourthScreenButton}
-            onPress={() => navigation.navigate('ChangePassword')}>
+            onPress={() => props.navigation.navigate('ChangePassword')}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>비밀번호 변경</Text>
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.nightFourthScreenButton}
             onPress={() => Alert.alert('로그아웃 하시겠습니까?', null, [
               { text: '취소', onPress: () => console.log('Cancel Pressed!')},
-              { text: '확인', onPress: () => navigation.navigate('Login')},
+              { text: '확인', onPress: () => props.authHandler(false)},
             ])}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>로그아웃</Text>
         </TouchableOpacity>
       </View>
-      <Text style={{color: "#fff", fontSize:10, textAlign: "center"}}>Made by Yeongsuk, Jeanne @2020</Text>
+      <Text style={{color: "#fff", fontSize:10, textAlign: "center"}}>Made by Yeongseok, Jeanne @2020</Text>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
   );
@@ -494,7 +494,9 @@ function ThirdTabStackScreen(props) {
   function FourthTabStackScreen(props) {
     return (
       <FourthTabStack.Navigator>
-        <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
+        <FourthTabStack.Screen name="FourthTabScreen" options={{headerShown: false}}>
+          {(_props)=><FourthTabScreen authHandler={props.authHandler} navigation={_props.navigation}/>}
+        </FourthTabStack.Screen>
         <FourthTabStack.Screen name="ChangePassword" options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
           {()=><ChangePassword email={props.email}/>} 
         </FourthTabStack.Screen>
@@ -552,7 +554,8 @@ export default class App extends Component{
               {()=><ThirdTabStackScreen email={this.props.email}/>}
             </Tab.Screen>
             <Tab.Screen name="FourthTabScreen">
-              {()=><FourthTabStackScreen email={this.props.email}/>}
+              {(_props)=><FourthTabStackScreen email={this.props.email}
+                authHandler={this.props.authHandler} navigation={_props.navigation}/>}
             </Tab.Screen>
 
       </Tab.Navigator>  

@@ -36,7 +36,7 @@ class Start extends Component {
             return <SplashScreen handler={this.loadingHandler}/>;
         }
         if (this.state.isLogined){
-            return <App email={this.state.email}/>
+            return <App email={this.state.email} authHandler={this.authHandler}/>
         }
         else{
             return(
