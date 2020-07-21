@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text,  TextInput, TouchableOpacity, Image, Alert, ImageBackground } from "react-native";
+import { Text,  TextInput, TouchableOpacity, Image, Alert, ImageBackground, ToastAndroid} from "react-native";
 import ImagePicker from 'react-native-image-picker';
 import {styles, bg} from "./App";
 
@@ -74,8 +74,8 @@ export default class UploadScreen extends Component {
     .then((json)=>{
       this.state.code = json.code;
       if(this.state.code === 200) alert("업로드에 성공하였습니다.", null, [
-        { text: '확인', onPress: () => this.navigation.goBack()}]);
-      else alert("업로드에 실패하였습니다.");
+        { text: '확인', onPress: () => this.navigation.goBack(null)}]);
+      else ToastAndroid.show("업로드 실패", ToastAndroid.SHORT);
     })
   };
 

@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground, ViewPropTypes } from "react-native";
+import { TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground, ViewPropTypes, ToastAndroid } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -22,50 +22,37 @@ const MyTheme = {
   },
 };
 
-function AddFriend(props){
-  console.log(props.email);
-  const fakeData = [];
-  for(i = 0; i < 100; i += 1) {
-    fakeData.push({
-      type: 'NORMAL',
-      item: {
-        id: 1,
-        image: faker.image.avatar(),
-        name: faker.name.firstName(),
-        description: faker.random.words(5),
+class AddFriend extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      searchFriend: ""
+    }
+  }
+
+  sendAddFriendRequest(){
+    const email = this.props.email;
+    fetch('http://192.249.19.244:1380/friend/add', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
-    });
-  }
-  state = {
-    list: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(fakeData),
-  };
-  layoutProvider = new LayoutProvider((i) => {
-    return state.list.getDataForIndex(i).type;
-  }, (type, dim) => {
-    switch (type) {
-      case 'NORMAL': 
-        dim.width = SCREEN_WIDTH;
-        dim.height = 100;
-        break;
-      default: 
-        dim.width = 0;
-        dim.height = 0;
-        break;
-      };
+      body: JSON.stringify({
+        email:email,
+        targetEmail: this.state.searchFriend
+      })
     })
-  
-  rowRenderer = (type, data) => {
-    const { image, name, description } = data.item;
-    return (
-      <View style={styles.listItem}>
-        <Image style={styles.image} source={{ uri: image }} />
-        <View style={styles.body}>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.description}>{description}</Text>
-        </View>
-      </View>
-    )
+    .then((response)=>response.json())
+    .then((json)=>{
+      if (json.code === 200){
+        ToastAndroid.show("친구 추가 성공", ToastAndroid.SHORT);
+      } else ToastAndroid.show("친구 추가 실패", ToastAndroid.SHORT);
+    })
+
   }
+
+  render(){
   return(
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <View style={{flexDirection: "column"}}>
@@ -74,18 +61,13 @@ function AddFriend(props){
               style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
               onPress={() => Alert.alert('친구로 추가하시겠습니까?', null, [
                 { text: '취소', onPress: () => console.log('Cancel Pressed!')},
-                { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+                { text: '확인', onPress: () => this.sendAddFriendRequest()},
               ])}>
               <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
           </TouchableOpacity>
         </View>
-        <RecyclerListView 
-        style={{flex: 1}}
-        rowRenderer={rowRenderer}
-        dataProvider={state.list}
-        layoutProvider={layoutProvider}/>
     </ImageBackground>
-  )
+  );}
 }
 
 class FirstTabScreen extends Component {
@@ -147,7 +129,7 @@ class FirstTabScreen extends Component {
         });
         console.log(feedData);
         this.setState({ dataProvider: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData)})
-      } else alert("목록 로딩 중 오류가 발생하였습니다.");
+      } else ToastAndroid.show("목록 로딩 중 오류가 발생하였습니다.", ToastAndroid.SHORT);
     });
   }
 
@@ -231,7 +213,7 @@ class SecondTabScreen extends Component {
         });
         console.log(feedData);
         this.setState({ dataProvider: new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData)})
-      } else alert("피드 로딩 중 오류가 발생하였습니다.");
+      } else ToastAndroid.show("피드 로딩 중 오류가 발생하였습니다.", ToastAndroid.SHORT);
     })
   }
 
@@ -316,7 +298,7 @@ class ThirdTabScreen extends Component {
         });
         console.log(feedData);
         this.state.dataProvider = new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(feedData);
-      } else alert("피드 로딩 중 오류가 발생하였습니다.");
+      } else ToastAndroid.show("피드 로딩 중 오류가 발생하였습니다.", ToastAndroid.SHORT);
     })
   }
 
@@ -340,7 +322,7 @@ class ThirdTabScreen extends Component {
         this.setState({nickname:json.nickname});
         this.setState({intro:json.intro});
       }
-      else alert("프로필 로딩 중 오류가 발생하였습니다.");
+      else ToastAndroid.show("프로필 로딩 중 오류가 발생하였습니다.", ToastAndroid.SHORT);
     })
   }
 

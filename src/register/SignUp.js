@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, ToastAndroid} from 'react-native';
 
 var login_background = require('../../asset/login_background.jpg')
 
@@ -16,7 +16,7 @@ class SignUp extends Component{
 
     handleSubmit = async function(){
         const {email, password, confirmPassword } = this.state;
-        if (password !== confirmPassword) {alert("Passwords don't match");}
+        if (password !== confirmPassword) {ToastAndroid.show("패스워드가 일치하지 않습니다", ToastAndroid.SHORT);}
         else {
             return fetch('http://192.249.19.244:1380/anon_signup', {
                 method: 'POST',
@@ -32,8 +32,8 @@ class SignUp extends Component{
               .then((response) => response.json())
               .then((json)=>{
                   this.state.code=json.code;
-                  if (this.state.code === 200) alert("Signup success");
-                  else alert("Signup failed");
+                  if (this.state.code === 200) ToastAndroid.show("가입 성공!", ToastAndroid.SHORT);
+                  else ToastAndroid.show("아이디와 비밀번호를 확인해주세요.", ToastAndroid.SHORT);
                 });
         }
     }

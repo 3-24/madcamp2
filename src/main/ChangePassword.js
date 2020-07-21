@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, TextInput, TouchableOpacity, Text, ImageBackground} from 'react-native';
+import {View, TextInput, TouchableOpacity, Text, ImageBackground, ToastAndroid} from 'react-native';
 import {styles} from './App';
 var bg = require('../../asset/night_background.jpg');
 
@@ -15,7 +15,7 @@ export default class ChangePassword extends Component{
 
     handleChangePassword = async function (email, originalPassword, newPassword, checkNewPassword){
         if (newPassword != checkNewPassword){
-            alert("Passwords don't match");
+            ToastAndroid.show("패스워드가 일치하지 않습니다...", ToastAndroid.SHORT);
             return;
         }
         alert("비밀번호가 변경되었습니다.");

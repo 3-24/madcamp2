@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TextInput, TouchableOpacity, Text, Image, ImageBackground} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity, Text, Image, ImageBackground, ToastAndroid} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 var bg = require('../../asset/night_background.jpg');
 
@@ -74,9 +74,9 @@ export default class ChangeProfile extends Component {
     .then((response)=>response.json())
     .then((json)=>{
       this.state.code = json.code;
-      if(this.state.code === 200) alert("회원정보를 수정하였습니다.", null, [
-        { text: '확인', onPress: () => this.navigation.goBack()}]);
-      else alert("수정에 실패했습니다.");
+      if(this.state.code === 200) alert("프로필을 수정하였습니다.", null, [
+        { text: '확인', onPress: () => this.navigation.goBack(null)}]);
+      else ToastAndroid.show("수정에 실패하였습니다", ToastAndroid.SHORT);
     })
   };
   render() {
