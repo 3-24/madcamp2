@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, TextInput, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TextInput, TouchableOpacity, Text} from 'react-native';
 import {styles} from './App';
 export default class ChangePassword extends Component{
     constructor(props){
