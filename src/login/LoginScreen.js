@@ -30,6 +30,7 @@ class LoginComponent extends Component {
       .then((json)=>{
         this.state.code = json.code;
         if(this.state.code === 200){
+          this.props.changeEmail(email);
           this.props.handler(true);
         }
         else alert("Check ID and password");
@@ -67,7 +68,7 @@ class StartUp extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login">
-            {(props)=><LoginComponent {...props} handler={this.props.handler}/>}
+            {()=><LoginComponent changeEmail={this.props.changeEmail} handler={this.props.handler}/>}
             </Stack.Screen>
           <Stack.Screen name="Register" component={SignUp}/>
         </Stack.Navigator>

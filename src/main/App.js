@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import LoginComponent from '../login/LoginScreen';
 import CameraScreen from './CameraScreen'
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
+import ChangePassword from "./ChangePassword"; 
 import faker from 'faker';
 import Daytheme from './DayTheme';
 
@@ -78,21 +79,6 @@ function AddFriend(){
         rowRenderer={rowRenderer}
         dataProvider={state.list}
         layoutProvider={layoutProvider}/>
-    </View>
-  )
-}
-
-function ChangePassword(){
-  return (
-    <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => handleChangePassword()}>
-            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
-        </TouchableOpacity>
     </View>
   )
 }
@@ -169,6 +155,22 @@ function UploadScreen({navigation}){
       }
     });
   };
+
+  handleMainSubmit = async function(title, content, imageUri){
+    var formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('content', content);
+    formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'testPhotoName'});
+    fetch('http://192.249.19.242:8480/mainSubmit',{
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "multipart/form-data"
+      },
+      body: formData
+    })
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: '#000'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
@@ -184,8 +186,8 @@ function UploadScreen({navigation}){
         <TouchableOpacity
             style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
             onPress={() => Alert.alert('업로드 하시겠습니까?', null, [
-              { text: '취소', onPress: () => navigation.navigate('ThirdTabScreen')},
-              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+              { text: '취소'},
+              { text: '확인', onPress: () => handleMainSubmit('title', 'content' , filePath.filePath)},
             ])}>
             <Text style={{color: '#fff', fontSize: 20}}>업로드</Text>
         </TouchableOpacity>
@@ -457,20 +459,26 @@ function ThirdTabStackScreen() {
 }
   const FourthTabStack = createStackNavigator();
 
-  function FourthTabStackScreen() {
+  function FourthTabStackScreen(props) {
     return (
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
-        <FourthTabStack.Screen name="Login" component={LoginComponent}/>
-        {/* <FourthTabStack.Screen name="DayTheme" component={Daytheme}/> */}
+        <FourthTabStack.Screen name="ChangePassword" options={{headerShown: false}}>
+          {()=><ChangePassword email={props.email}/>} 
+        </FourthTabStack.Screen>
       </FourthTabStack.Navigator>
     );
   }
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default class App extends Component{
+  constructor(props){
+    super(props);
+    this.email =  this.props.getEmail()
+  }
+
+  render(){
   return (
     <NavigationContainer independent = {true}>
       <Tab.Navigator
@@ -510,11 +518,14 @@ export default function App() {
             <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
             <Tab.Screen name="ThirdTabScreen" component={ThirdTabStackScreen}/>
-            <Tab.Screen name="FourthTabScreen" component={FourthTabStackScreen}/>
+            <Tab.Screen name="FourthTabScreen">
+              {()=><FourthTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
 
       </Tab.Navigator>  
     </NavigationContainer>
   );
+  }
 }
 const styles = StyleSheet.create({
   button: {
@@ -606,31 +617,5 @@ handleProfileSubmit = async function(){
       { text: '확인', onPress: () => navigation.navigate('ThirdTabScreen')}]);
     else alert("오류");
     //무슨 오류가 생길지는 아직 생각이 안남
-  })
-}
-
-handleChangePassword = async function(){
-  const {email, originalPassword, newPassword, checkNewPassword} = this.state;
-  fetch('http://192.249.19.242:8480/profile', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      //email보내는 이유는 그 사람 계정인거를 확인하려구!
-      originalPassword: originalPassword,
-      newPassword: newPassword,
-      checkNewPassword: checkNewPassword
-    })
-  })
-  .then((response)=>response.json())
-  .then((json)=>{
-    this.state.code = json.code;
-    if(this.state.code === 200) alert("비밀번호가 변경되었습니다.", null, [
-      { text: '확인', onPress: () => navigation.navigate('FourthTabScreen')}]);
-    else if (this.state.code === 400) alert("기존 비밀번호가 일치하지 않습니다.");
-    else if (this.state.code === 401) alert("비밀번호 확인이 일치하지 않습니다.");
   })
 }
