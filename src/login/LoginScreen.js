@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, TextInput, Text } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, TextInput, Text, ImageBackground, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignUp from '../register/SignUp';
-
+var login_background = require('../../asset/login_background.jpg')
 class LoginComponent extends Component {
     constructor(props) {
       super(props);
@@ -38,19 +38,26 @@ class LoginComponent extends Component {
     
     render(){
     return(
-      <View style={styles.container}>
-        <TextInput style={styles.inputbox} placeholder="Email" onChangeText={(input)=>this.setState({email:input})}/>
-        <TextInput secureTextEntry={true}
-          style={styles.inputbox}
-          placeholder="password"
-          onChangeText={(input)=>this.setState({password: input})}/>
-        <TouchableOpacity style={styles.button} onPress={() => this.handleSubmit()} >
-          <Text>LOGIN!</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Register')} >
-          <Text>REGISTER</Text>
-        </TouchableOpacity>
-      </View>
+      <ImageBackground source = {login_background} style={{height:'100%', width: '100%', justifyContent: 'center'}}>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <TextInput style={styles.inputbox} 
+          placeholderTextColor='#000'
+          placeholder="이메일" 
+          onChangeText={(input)=>this.setState({email:input})}/>
+          <TextInput secureTextEntry={true}
+            style={styles.inputbox}
+            placeholderTextColor='#000'
+            placeholder="비밀번호"
+            onChangeText={(input)=>this.setState({password: input})}/>
+          <TouchableOpacity style={{backgroundColor: '#000', width: "40%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.handleSubmit()} >
+            <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>로그인</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{backgroundColor: '#000', width: "40%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.props.navigation.navigate('Register')} >
+            <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>회원가입</Text>
+          </TouchableOpacity>
+        </View>
+        <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#07111d'/>
+      </ImageBackground>
     );
     }
 }
@@ -66,10 +73,10 @@ class StartUp extends Component {
     return (
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen name="Login">
-            {(props)=><LoginComponent {...props} handler={this.props.handler}/>}
+            <Stack.Screen name="Login" options={{ title: '로그인', headerStyle:{ backgroundColor: '#07111d' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
+            {(props)=><LoginComponent {...props} handler={this.props.handler} />}
             </Stack.Screen>
-          <Stack.Screen name="Register" component={SignUp}/>
+          <Stack.Screen name="Register" component={SignUp}options={{ title: '회원가입', headerStyle:{ backgroundColor: '#07111d' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -79,7 +86,7 @@ class StartUp extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: '#000',
         alignItems: 'center',
         flex:1,
         justifyContent: 'center',
@@ -87,9 +94,13 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     inputbox : {
-        borderColor: 'gray',
-        borderWidth: 1,
+        width: "100%",
+        borderColor: '#323c57',
+        backgroundColor: '#fff',
+        opacity: 0.3,
+        borderWidth: 2,
         paddingLeft: 10,
+        width: "90%"
     },
     button : {
         backgroundColor: "#DDDDDD",

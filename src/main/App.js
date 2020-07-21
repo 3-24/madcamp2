@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, PickerIOSComponent, Dimensions, StatusBar, ImageBackground } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TextInput } from "react-native-gesture-handler";
@@ -11,11 +11,18 @@ import CameraScreen from './CameraScreen'
 import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import faker from 'faker';
-import Daytheme from './DayTheme';
+import { DayTheme, NightTheme } from '../../styles/Themes'
 
 var profile_image = require('../../asset/profile_image.jpg')
 var bg = require('../../asset/night_background.jpg')
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(255,45,85)',
+  },
+};
 
 function AddFriend(){
   const fakeData = [];
@@ -61,9 +68,9 @@ function AddFriend(){
     )
   }
   return(
-    <View style={{flex: 1, backgroundColor: '#120814'}}>
+    <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <View style={{flexDirection: "column"}}>
-          <TextInput style={styles.inputbox} placeholder="검색" onChangeText={(input) => this.setState({searchFriend: input})}/>
+          <TextInput style={styles.nightInputbox} placeholder="검색" onChangeText={(input) => this.setState({searchFriend: input})}/>
           <TouchableOpacity
               style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
               onPress={() => Alert.alert('친구로 추가하시겠습니까?', null, [
@@ -78,16 +85,16 @@ function AddFriend(){
         rowRenderer={rowRenderer}
         dataProvider={state.list}
         layoutProvider={layoutProvider}/>
-    </View>
+    </ImageBackground>
   )
 }
 
 function ChangePassword(){
   return (
-    <View style={{flex: 1, backgroundColor: '#120814'}}>
-        <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-        <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
+    <View style={{flex: 1, backgroundColor: '#000'}}>
+        <TextInput style={styles.nightInputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
+        <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
+        <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
         <TouchableOpacity
             style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
             onPress={() => handleChangePassword()}>
@@ -123,8 +130,9 @@ function ChangeProfile(){
     });
   };
   return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-        <TextInput style={styles.inputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
+    <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
+        <TextInput style={styles.nightInputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
+        <TextInput style={styles.nightInputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity 
           style={styles.camerabutton}
           onPress={chooseFile}>
@@ -134,14 +142,13 @@ function ChangeProfile(){
           style={{ width: 250, height: 250 }}
           />
         </TouchableOpacity>
-        <TextInput style={styles.inputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity
             style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
             onPress={() => handleProfileSubmit()}>
             <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
         </TouchableOpacity>
 
-    </View>
+    </ImageBackground>
   )
 }
 
@@ -170,7 +177,7 @@ function UploadScreen({navigation}){
     });
   };
   return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
+    <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
         <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
         <TextInput style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
         <TouchableOpacity
@@ -189,7 +196,7 @@ function UploadScreen({navigation}){
             ])}>
             <Text style={{color: '#fff', fontSize: 20}}>업로드</Text>
         </TouchableOpacity>
-    </View>
+    </ImageBackground>
   )       
 }
 
@@ -248,6 +255,7 @@ function FirstTabScreen({navigation}) {
         rowRenderer={rowRenderer}
         dataProvider={state.list}
         layoutProvider={layoutProvider}/>
+      <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
   );
 }
@@ -287,17 +295,13 @@ function SecondTabScreen({navigation}) {
   rowRenderer = (type, data) => {
     const { image, title, name, description } = data.item;
     return (
-      <View style={{flexDirection: 'row', margin: 10}}>
-        <View style = {{flexDirection: 'column'}}>
-          <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold', padding: 5}}>{name}</Text>
+      <View style={{flexDirection: 'row', margin: 10, justifyContent: 'center'}}>
+        <View style = {{flexDirection: 'column', justifyContent: 'center'}}>
+          <Text style={{color: '#fff', fontSize: 15, fontWeight: 'bold', padding: 5}}>{name}</Text>
           <Image style={{width: 300, height: 300}} source={{ uri: image }} />
-          <Text style={styles.name}>{title}</Text>
+          <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
-        {/* <View style={styles.body}>
-          <Text style={styles.name}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
-        </View> */}
       </View>
     )
   }
@@ -308,6 +312,7 @@ function SecondTabScreen({navigation}) {
         rowRenderer={rowRenderer}
         dataProvider={state.list}
         layoutProvider={layoutProvider}/>
+      <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
   );
 }
@@ -320,6 +325,7 @@ function ThirdTabScreen({navigation}) {
       item: {
         id: 1,
         image: faker.image.avatar(),
+        title: faker.random.word(),
         description: faker.random.words(5),
       },
     });
@@ -343,12 +349,13 @@ function ThirdTabScreen({navigation}) {
     })
   
   rowRenderer = (type, data) => {
-    const { image, description } = data.item;
+    const { image, title, description } = data.item;
     return (
-      <View style={{flexDirection: 'row', height: 200, alignItems: 'center'}}>
+      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
         <View style={{flexDirection: 'column'}}>
-          <Image style={{width: 300, height: 300}} source={{ uri: image }} />
+          <Image style={{width: 300, height: 300, margin: 15}} source={{ uri: image }} />
         {/* <View style={{marginLeft: 10, marginRight: 10, maxWidth: SCREEN_WIDTH - (80 + 10 + 20)}}> */}
+          <Text style={styles.name}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
         {/* </View> */}
@@ -358,21 +365,21 @@ function ThirdTabScreen({navigation}) {
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <Text style={{color: "#fff", padding: 5, fontSize: 30, padding: 10}}>RandomID</Text>
-      <View style={{flex:1, flexDirection: 'row'}}>
+      <View style={{flex:0.6, flexDirection: 'row', borderBottomColor: '#fff', borderBottomWidth: 0.5}}>
         <Image
             style={{height:200, width:200, margin: 10}}
             source={profile_image}/>
           <View style={{flex:1, flexDirection: 'column'}}>
-            <Text style={{color: "#fff", padding: 5}}>안녕하세요 저는 22살 개발자이고요 과자와 고양이를 좋아합니다. 많이들 구경와주세요.</Text>
+            <Text style={{color: "#fff", padding: 5, fontSize: 15}}>안녕하세요 저는 22살 개발자이고요 과자와 고양이를 좋아합니다. 많이들 구경와주세요.</Text>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity 
-                style={{backgroundColor: "#000", padding: 10,  alignItems:'flex-end', justifyContent: 'flex-end', marginTop: 10, marginBottom: 10, borderColor: '#fff', borderWidth: 1}}
+                style={styles.nightThirdScreenButton}
                 onPress={() => navigation.navigate('ChangeProfile')}
             >
                 <Text style={{color: "#fff"}}>프로필 수정</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                  style={{backgroundColor: "#000", padding: 10,  alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 10, marginBottom: 10, marginLeft: 10, borderColor: '#fff', borderWidth: 1}}
+                  style={styles.nightThirdScreenButton}
                   onPress={() => navigation.navigate('Upload')}
               >
                   <Text style={{color: "#fff"}}>밤편지 쓰기</Text>
@@ -385,6 +392,7 @@ function ThirdTabScreen({navigation}) {
         rowRenderer={rowRenderer}
         dataProvider={state.list}
         layoutProvider={layoutProvider}/>
+      <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
   );
 }
@@ -392,23 +400,23 @@ function ThirdTabScreen({navigation}) {
 function FourthTabScreen({navigation}) {
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-      <View style={{flexDirection: 'column', alignItems: 'center'}}>
+      <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity
-            style={{backgroundColor: '#000', padding: 20, marginBottom: 10, marginTop: 10, alignItems: 'center', width: "40%"}}
+            style={styles.nightFourthScreenButton}
             onPress={() => Alert.alert('테마를 변경하시겠습니까?', null, [
               { text: '취소', onPress: () => console.log('Cancel Pressed!')},
-              { text: '확인', onPress: () => console.log('Confirm Pressed!')},
+              { text: '확인', onPress: () => navigation.navigate('DayTheme')},
               // navigation.navigate('Daytheme')
             ])}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>테마 변경</Text>
         </TouchableOpacity>
         <TouchableOpacity
-            style={{backgroundColor: '#000', padding: 20, marginBottom: 10, alignItems: 'center', width: "40%"}}
+            style={styles.nightFourthScreenButton}
             onPress={() => navigation.navigate('ChangePassword')}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>비밀번호 변경</Text>
         </TouchableOpacity>
         <TouchableOpacity
-            style={{backgroundColor: '#000', padding: 20, marginBottom: 10, alignItems: 'center', width: "40%"}}
+            style={styles.nightFourthScreenButton}
             onPress={() => Alert.alert('로그아웃 하시겠습니까?', null, [
               { text: '취소', onPress: () => console.log('Cancel Pressed!')},
               { text: '확인', onPress: () => navigation.navigate('Login')},
@@ -428,7 +436,7 @@ function FirstTabStackScreen() {
   return (
     <FirstTabStack.Navigator>
       <FirstTabStack.Screen name="FirstTabScreen" component={FirstTabScreen} options={{headerShown: false}}/>
-      <FirstTabStack.Screen name="AddFriend" component={AddFriend} options={{ title: '친구 추가', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
+      <FirstTabStack.Screen name="AddFriend" component={AddFriend} options={{ title: '친구 추가', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
     </FirstTabStack.Navigator>
   );
 }
@@ -437,7 +445,7 @@ const SecondTabStack = createStackNavigator();
 function SecondTabStackScreen() {
   return (
     <SecondTabStack.Navigator>
-      <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} options={{ title: '밤편지', headerStyle:{ backgroundColor: '#000' }, headerTitleStyle:{color: '#fff', fontWeight: 'bold'}}}/>
+      <SecondTabStack.Screen name="SecondTabScreen" component={SecondTabScreen} options={{ title: '밤편지', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{color: '#fff', fontWeight: 'bold'}}}/>
     </SecondTabStack.Navigator>
   );
 }
@@ -447,8 +455,8 @@ function ThirdTabStackScreen() {
   return (
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen name="ThirdTabScreen" component={ThirdTabScreen} options={{headerShown: false}}/>
-      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{ title: '회원정보 수정', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
-      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#8985d6'}, headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <ThirdTabStack.Screen name="ChangeProfile" component={ChangeProfile} options={{ title: '프로필 수정', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#000'}, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
         {/* {()=><CameraScreen filePath={this.filePath}/>} */}
       </ThirdTabStack.Screen>
@@ -461,9 +469,8 @@ function ThirdTabStackScreen() {
     return (
       <FourthTabStack.Navigator>
         <FourthTabStack.Screen name="FourthTabScreen" component={FourthTabScreen} options={{headerShown: false}}/>
-        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#8985d6' }, headerTitleStyle:{fontWeight: 'bold'}}}/>
+        <FourthTabStack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '비밀번호 변경', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
         <FourthTabStack.Screen name="Login" component={LoginComponent}/>
-        {/* <FourthTabStack.Screen name="DayTheme" component={Daytheme}/> */}
       </FourthTabStack.Navigator>
     );
   }
@@ -472,7 +479,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer independent = {true}>
+    <NavigationContainer independent = {true} theme={MyTheme}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color }) => {
@@ -505,7 +512,6 @@ export default function App() {
             backgroundColor: '#000',
             height: '7%',
           },
-          indicatorStyle:{backgroundColor: '#888'},
           labelStyle:{fontSize:12}}}>
             <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
@@ -517,6 +523,14 @@ export default function App() {
   );
 }
 const styles = StyleSheet.create({
+  nightBar: {
+    backgroundColor: '#000',
+    height: '7%'
+  },
+  darBar: {
+    backgroundColor: '#ffcccc',
+    height: '7%'
+  },
   button: {
       backgroundColor: "#120824",
       marginBottom: 30,
@@ -532,9 +546,17 @@ const styles = StyleSheet.create({
   text: {
       color: "#fff"
   },
-  inputbox : {
-    borderColor: '#fff',
-    backgroundColor: '#c2bfff',
+  nightInputbox : {
+    borderColor: '#000',
+    backgroundColor: '#fff',
+    opacity: 0.3,
+    borderWidth: 1,
+    paddingLeft: 10,
+  },
+  dayInputbox : {
+    borderColor: '#99b1d1',
+    backgroundColor: '#b1becf',
+    opacity: 0.3,
     borderWidth: 1,
     paddingLeft: 10,
   },
@@ -561,17 +583,58 @@ const styles = StyleSheet.create({
   name: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   description: {
     color: '#fff',
     fontSize: 14,
-    opacity: 0.5,
+    opacity: 0.8
   },
   listItem: {
     flexDirection: 'row',
     margin: 10,
   },
+
+  nightThirdScreenButton: {
+    backgroundColor: "#000", 
+    padding: 10,  
+    alignItems:'flex-end', 
+    justifyContent: 'flex-end', 
+    marginTop: 10, 
+    marginBottom: 10, 
+    borderColor: '#fff', 
+    borderWidth: 0.3
+  },
+
+  dayThirdScreenButton: {
+    backgroundColor: "#6e87a6", 
+    padding: 10,  
+    alignItems:'flex-end', 
+    justifyContent: 'flex-end', 
+    marginTop: 10, 
+    marginBottom: 10, 
+    borderColor: '#fff', 
+    borderWidth: 0.3
+  },
+
+  nightFourthScreenButton: {
+    backgroundColor: '#000', 
+    padding: 20, 
+    marginBottom: 10, 
+    marginTop: 10, 
+    alignItems: 'center', 
+    width: "40%"
+  },
+
+  dayFourthScreenButton: {
+    backgroundColor: '#627c9f', 
+    padding: 20, 
+    marginBottom: 10, 
+    marginTop: 10, 
+    alignItems: 'center', 
+    width: "40%"
+  }
+
 });
   
 const options = {
@@ -581,6 +644,18 @@ const options = {
     path: 'images',
   },
 };
+
+const night = {
+  background: '#000',
+  upperbar: '#8985d6',
+  input: '#c2bfff'
+}
+
+const day = {
+  background: '#',
+  upperbar: '#',
+  input: ''
+}
 
 handleProfileSubmit = async function(){
   const {email, nickname, profileImage, aboutMe} = this.state;
