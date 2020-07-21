@@ -84,13 +84,19 @@ export default class ChangeProfile extends Component {
       <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
         <TextInput
           autoCapitalize='none'
-          style={styles.inputbox}
+          style={{borderColor: '#000',
+          backgroundColor: '#fff',
+          borderWidth: 1,
+          paddingLeft: 10,}}
           placeholder="아이디"
           onChangeText={(input) => this.setState({nickname:input})}
         />
         <TextInput
           autoCapitalize='none'
-          style={styles.inputbox}
+          style={{borderColor: '#000',
+          backgroundColor: '#fff',
+          borderWidth: 1,
+          paddingLeft: 10,}}
           placeholder="소개글"
           onChangeText={(input) => this.setState({aboutMe:input})}
         />
@@ -116,16 +122,3 @@ export default class ChangeProfile extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  cameraButton: {
-    backgroundColor: '#fff',
-  },
-  inputbox: {
-    borderColor: '#000',
-    backgroundColor: '#fff',
-    // opacity: 0.3,
-    borderWidth: 1,
-    paddingLeft: 10,
-  },
-});
