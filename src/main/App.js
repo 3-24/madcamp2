@@ -150,7 +150,7 @@ function UploadScreen({navigation}){
       },
       body: formData
     })
-  }
+
 
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>

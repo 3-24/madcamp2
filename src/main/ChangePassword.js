@@ -61,22 +61,3 @@ export default class ChangePassword extends Component{
     );
   }
 }
-
-const styles = StyleSheet.create({
-    button: {
-        backgroundColor: '#000',
-        margin: 10,
-        alignItems: 'flex-end',
-        marginRight: 15
-    },
-    inputbox : {
-        borderColor: 'gray',
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        paddingLeft: 10,
-    },
-    text: {
-        color: "#fff",
-        fontSize: 20
-    },
-});
