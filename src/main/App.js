@@ -71,7 +71,7 @@ function AddFriend(){
   return(
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
       <View style={{flexDirection: "column"}}>
-          <TextInput style={styles.nightInputbox} placeholder="검색" onChangeText={(input) => this.setState({searchFriend: input})}/>
+          <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="검색" onChangeText={(input) => this.setState({searchFriend: input})}/>
           <TouchableOpacity
               style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
               onPress={() => Alert.alert('친구로 추가하시겠습니까?', null, [
@@ -116,8 +116,8 @@ function UploadScreen({navigation}){
   };
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-        <TextInput style={styles.nightInputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
-        <TextInput style={styles.nightInputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
+        <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
+        <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
         <TouchableOpacity 
           style={styles.camerabutton}
           onPress={chooseFile}>
@@ -154,8 +154,8 @@ function UploadScreen({navigation}){
 
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-        <TextInput style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
-        <TextInput style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
+        <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
+        <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
         <TouchableOpacity
           onPress={chooseFile}>
           <Text style={{ alignItems: 'center', color:'#fff', padding: 15 }}>사진 추가</Text>

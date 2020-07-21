@@ -44,11 +44,13 @@ class LoginComponent extends Component {
           <TextInput style={styles.inputbox} 
           placeholderTextColor='#000'
           placeholder="이메일" 
+          autoCapitalize='none'
           onChangeText={(input)=>this.setState({email:input})}/>
           <TextInput secureTextEntry={true}
             style={styles.inputbox}
             placeholderTextColor='#000'
             placeholder="비밀번호"
+            autoCapitalize='none'
             onChangeText={(input)=>this.setState({password: input})}/>
           <TouchableOpacity style={{backgroundColor: '#000', width: "40%", padding: 5, alignItems: 'center', marginTop: 10}} onPress={() => this.handleSubmit()} >
             <Text style={{fontSize: 15, alignItems: 'center', color: '#fff'}}>로그인</Text>
