@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TextInput, TouchableOpacity, Text, Image} from 'react-native';
+import {View, TextInput, TouchableOpacity, Text, Image} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import {styles} from './App';
 
 export default class ChangeProfile extends Component {
   constructor(props) {
@@ -115,15 +116,3 @@ export default class ChangeProfile extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  cameraButton: {
-    backgroundColor: '#fff',
-  },
-  inputbox: {
-    borderColor: '#fff',
-    backgroundColor: '#c2bfff',
-    borderWidth: 1,
-    paddingLeft: 10,
-  },
-});

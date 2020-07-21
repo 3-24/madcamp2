@@ -12,10 +12,11 @@ import ImagePicker from 'react-native-image-picker';
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 import ChangePassword from "./ChangePassword"; 
 import ChangeProfile from "./ChangeProfile";
+import UploadScreen from "./UploadScreen";
 import faker from 'faker';
 
 var profile_image = require('../../asset/profile_image.jpg')
-var bg = require('../../asset/night_background.jpg')
+export var bg = require('../../asset/night_background.jpg')
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const MyTheme = {
@@ -90,92 +91,6 @@ function AddFriend(props){
         layoutProvider={layoutProvider}/>
     </ImageBackground>
   )
-}
-
-function UploadScreen({navigation}){
-  const [filePath, setfilePath] = useState(0);
-  chooseFile = () => {
-    var options = {
-      title: '사진 추가',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else {
-        let source = response.uri;
-        setfilePath({filePath: source});
-      }
-    });
-  };
-  return (
-    <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-        <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="아이디" onChangeText={(input) => this.setState({nickname: input})}/>
-        <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="소개글" onChangeText={(input) => this.setState({aboutMe: input})}/>
-        <TouchableOpacity 
-          style={styles.camerabutton}
-          onPress={chooseFile}>
-          <Text style={{ alignItems: 'center', color:'#fff' }}>사진 변경</Text>
-          <Image
-          source={{uri: filePath.filePath}}
-          style={{ width: 250, height: 250 }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => handleProfileSubmit()}>
-            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
-        </TouchableOpacity>
-
-    </ImageBackground>
-  )
-}
-
-  handleMainSubmit = async function(title, content, imageUri){
-    var formData = new FormData();
-    // formData.append('title', title);
-    // formData.append('content', content);
-    formData.append('photo', {uri: imageUri, type: 'image/jpeg', name: 'testPhotoName'});
-    fetch('http://192.249.19.244:1380/mainSubmit',{
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        "Content-Type": "multipart/form-data"
-      },
-      body: formData
-    })
-
-
-  return (
-    <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-        <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
-        <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
-        <TouchableOpacity
-          onPress={chooseFile}>
-          <Text style={{ alignItems: 'center', color:'#fff', padding: 15 }}>사진 추가</Text>
-          <Image
-          source={{uri: filePath.filePath}}
-          style={{ width: 250, height: 250 }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
-            onPress={() => Alert.alert('업로드 하시겠습니까?', null, [
-              { text: '취소'},
-              { text: '확인', onPress: () => handleMainSubmit('title', 'content' , filePath.filePath)},
-            ])}>
-            <Text style={{color: '#fff', fontSize: 20}}>업로드</Text>
-        </TouchableOpacity>
-    </ImageBackground>
-  )       
 }
 
 function FirstTabScreen({navigation}) {
