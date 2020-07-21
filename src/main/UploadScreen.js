@@ -82,8 +82,8 @@ export default class UploadScreen extends Component {
   render(){
     return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-      <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
-      <TextInput autoCapitalize='none' style={styles.inputbox} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
+      <TextInput autoCapitalize='none' style={{borderColor: '#000', backgroundColor: '#fff', borderWidth: 1, paddingLeft: 10}} placeholder="제목" onChangeText={(input) => this.setState({title: input})}/>
+      <TextInput autoCapitalize='none' style={{borderColor: '#000', backgroundColor: '#fff', borderWidth: 1, paddingLeft: 10}} placeholder="내용" onChangeText={(input) => this.setState({content: input})}/>
       <TouchableOpacity onPress={this.chooseFile}>
         <Text style={{ alignItems: 'center', color:'#fff', padding: 15 }}>사진 추가</Text>
         <Image

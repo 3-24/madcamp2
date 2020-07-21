@@ -14,13 +14,6 @@ import faker from 'faker';
 export var bg = require('../../asset/night_background.jpg')
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const MyTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: 'rgb(255,45,85)',
-  },
-};
 
 class AddFriend extends Component {
   constructor(props){
@@ -136,11 +129,18 @@ class FirstTabScreen extends Component {
   render(){
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
-      <TouchableOpacity 
-            style={{backgroundColor: "#000", padding: 15,  alignItems:'flex-end'}}
-            onPress={() => this.props.navigation.navigate('AddFriend')}>
-          <Text style={{color: "#fff"}}>친구 추가</Text>
-      </TouchableOpacity>
+      <View style={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+        <TouchableOpacity 
+              style={{backgroundColor: "#000", padding: 15}}
+              onPress={() => this.fetchFriendInfos()}>
+            <Ionicons name="refresh-outline" color="#fff" size={20}></Ionicons>
+        </TouchableOpacity>
+        <TouchableOpacity 
+              style={{backgroundColor: "#000", padding: 15,  alignItems:'flex-end'}}
+              onPress={() => this.props.navigation.navigate('AddFriend')}>
+            <Text style={{color: "#fff", fontSize: 15}}>친구 추가</Text>
+        </TouchableOpacity>
+      </View>
         <RecyclerListView 
         style={{flex: 1}}
         rowRenderer={this.rowRenderer}
@@ -220,6 +220,13 @@ class SecondTabScreen extends Component {
   render(){
   return (
     <ImageBackground source ={bg} style={{height:'100%', width: '100%'}}>
+      <View style={{alignItems: 'flex-end', justifyContent:'flex-end'}}>
+        <TouchableOpacity 
+              style={{backgroundColor: "#000", padding: 15, justifyContent: 'flex-end'}}
+              onPress={() => this.fetchFeed()}>
+            <Ionicons name="refresh-outline" color="#fff" size={20}></Ionicons>
+        </TouchableOpacity>
+      </View>
       <RecyclerListView 
         style={{flex: 1}}
         rowRenderer={this.rowRenderer}
@@ -238,7 +245,7 @@ class ThirdTabScreen extends Component {
       nickname: '',
       intro: '',
       dataProvider:  new DataProvider((r1, r2) => r1 !== r2),
-    }
+    };
 
     this.layoutProvider = new LayoutProvider(
       () => {return 0;},  // only one view type
@@ -261,7 +268,6 @@ class ThirdTabScreen extends Component {
       )
     }
   }
-
   componentDidMount(){
     this.fetchProfile();
   }
@@ -348,13 +354,28 @@ class ThirdTabScreen extends Component {
                   <Text style={{color: "#fff"}}>밤편지 쓰기</Text>
               </TouchableOpacity>
             </View>
+            <View style={{alignItems:'flex-end', justifyContent:'flex-end'}}>
+              <TouchableOpacity 
+                  style={{backgroundColor: "#000", padding: 15}}
+                  onPress={() => this.fetchProfile()}>
+                  <Ionicons name="refresh-outline" color="#fff" size={20}></Ionicons>
+              </TouchableOpacity>
+              </View>
           </View>
+      </View>
+      <View style={{alignItems: 'flex-end',justifyContent:'flex-end'}}>
+        <TouchableOpacity 
+          style={{backgroundColor: "#000", padding: 15}}
+          onPress={() => this.fetchMyFeed()}>
+          <Ionicons name="refresh-outline" color="#fff" size={20}></Ionicons>
+        </TouchableOpacity>
       </View>
       <RecyclerListView 
         style={{flex: 1}}
         rowRenderer={this.rowRenderer}
         dataProvider={this.state.dataProvider}
-        layoutProvider={this.layoutProvider}/>
+        layoutProvider={this.layoutProvider}>
+        </RecyclerListView>
       <StatusBar barStyle ="light-content" hidden = {false} backgroundColor = '#000'/>
     </ImageBackground>
   );}
@@ -369,7 +390,6 @@ function FourthTabScreen(props) {
             onPress={() => Alert.alert('테마를 변경하시겠습니까?', null, [
               { text: '취소', onPress: () => console.log('Cancel Pressed!')},
               { text: '확인', onPress: () => console.log('Change pressed!')},
-              // navigation.navigate('Daytheme')
             ])}>
             <Text style={{color: '#fff', alignItems: 'flex-end', fontSize: 20}}>테마 변경</Text>
         </TouchableOpacity>
@@ -436,7 +456,6 @@ function ThirdTabStackScreen(props) {
       </ThirdTabStack.Screen>
 
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
-        {/* {()=><CameraScreen filePath={this.filePath}/>} */}
       </ThirdTabStack.Screen>
     </ThirdTabStack.Navigator>
   );
@@ -544,14 +563,6 @@ export const styles = StyleSheet.create({
   nightInputbox : {
     borderColor: '#000',
     backgroundColor: '#fff',
-    // opacity: 0.3,
-    borderWidth: 1,
-    paddingLeft: 10,
-  },
-  dayInputbox : {
-    borderColor: '#99b1d1',
-    backgroundColor: '#b1becf',
-    opacity: 0.3,
     borderWidth: 1,
     paddingLeft: 10,
   },
@@ -605,28 +616,8 @@ export const styles = StyleSheet.create({
     borderWidth: 0.3
   },
 
-  dayThirdScreenButton: {
-    backgroundColor: "#6e87a6", 
-    padding: 10,  
-    alignItems:'flex-end', 
-    justifyContent: 'flex-end', 
-    marginTop: 10, 
-    marginBottom: 10, 
-    borderColor: '#fff', 
-    borderWidth: 0.3
-  },
-
   nightFourthScreenButton: {
     backgroundColor: '#000', 
-    padding: 20, 
-    marginBottom: 10, 
-    marginTop: 10, 
-    alignItems: 'center', 
-    width: "40%"
-  },
-
-  dayFourthScreenButton: {
-    backgroundColor: '#627c9f', 
     padding: 20, 
     marginBottom: 10, 
     marginTop: 10, 
