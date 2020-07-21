@@ -17,6 +17,7 @@ import faker from 'faker';
 var profile_image = require('../../asset/profile_image.jpg')
 var bg = require('../../asset/night_background.jpg')
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 const MyTheme = {
   ...DefaultTheme,
   colors: {
@@ -25,7 +26,8 @@ const MyTheme = {
   },
 };
 
-function AddFriend(){
+function AddFriend(props){
+  console.log(props.email);
   const fakeData = [];
   for(i = 0; i < 100; i += 1) {
     fakeData.push({
@@ -444,11 +446,16 @@ function FourthTabScreen({navigation}) {
 
 const FirstTabStack = createStackNavigator();
 
-function FirstTabStackScreen() {
+function FirstTabStackScreen(props) {
+  console.log(props.email);
   return (
     <FirstTabStack.Navigator>
-      <FirstTabStack.Screen name="FirstTabScreen" component={FirstTabScreen} options={{headerShown: false}}/>
-      <FirstTabStack.Screen name="AddFriend" component={AddFriend} options={{ title: '친구 추가', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <FirstTabStack.Screen  name="FirstTabScreen" options={{headerShown: false}}>
+        {(props1)=><FirstTabScreen  email={props.email} navigation={props1.navigation}/> }
+      </FirstTabStack.Screen>
+      <FirstTabStack.Screen name="AddFriend"  options={{ title: '친구 추가', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
+        {()=><AddFriend email={props.email}/>}
+      </FirstTabStack.Screen>
     </FirstTabStack.Navigator>
   );
 }
@@ -464,6 +471,7 @@ function SecondTabStackScreen() {
 const ThirdTabStack = createStackNavigator();
 
 function ThirdTabStackScreen(props) {
+  console.log(props.email);
   return (
     <ThirdTabStack.Navigator>
       <ThirdTabStack.Screen  name="ThirdTabScreen" options={{headerShown: false}}>
@@ -472,7 +480,9 @@ function ThirdTabStackScreen(props) {
       <ThirdTabStack.Screen name="ChangeProfile" options={{ title: '프로필 수정', headerStyle:{ backgroundColor: '#000' }, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
         {()=><ChangeProfile email={props.email}/>}
       </ThirdTabStack.Screen>
-      <ThirdTabStack.Screen name="Upload" component={UploadScreen} options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#000'}, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}/>
+      <ThirdTabStack.Screen name="Upload" options={{ title: '밤편지 쓰기', headerStyle:{ backgroundColor: '#000'}, headerTintColor: '#fff', headerTitleStyle:{fontWeight: 'bold', color: '#fff'}}}>
+        {()=><UploadScreen email={props.email}/>}
+      </ThirdTabStack.Screen>
 
       <ThirdTabStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}>
         {/* {()=><CameraScreen filePath={this.filePath}/>} */}
@@ -501,7 +511,7 @@ export default class App extends Component{
   }
   render(){
   return (
-    <NavigationContainer independent = {true} theme={MyTheme}>
+    <NavigationContainer independent = {true}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color }) => {
@@ -535,7 +545,9 @@ export default class App extends Component{
             height: '7%',
           },
           labelStyle:{fontSize:12}}}>
-            <Tab.Screen name="FirstTabScreen" component={FirstTabStackScreen}/>
+            <Tab.Screen name="FirstTabScreen">
+              {()=><FirstTabStackScreen email={this.props.email}/>}
+            </Tab.Screen>
             <Tab.Screen name="SecondTabScreen" component={SecondTabStackScreen}/>
             <Tab.Screen name="ThirdTabScreen">
               {()=><ThirdTabStackScreen email={this.props.email}/>}
