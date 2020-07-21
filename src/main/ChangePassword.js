@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, TextInput, TouchableOpacity, Text, StyleSheet} from 'react-native';
-
+import {styles} from './App';
 export default class ChangePassword extends Component{
     constructor(props){
         super(props);
@@ -42,12 +42,12 @@ export default class ChangePassword extends Component{
 
     render(){
     return (
-        <View style={{flex: 1, backgroundColor: '#120814'}}>
-            <TextInput style={styles.inputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-            <TextInput style={styles.inputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-            <TextInput style={styles.inputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
+        <View style={{flex: 1, backgroundColor: '#000'}}>
+            <TextInput style={styles.nightInputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
+            <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
+            <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
             <TouchableOpacity
-                style={styles.button}
+                style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
                 onPress={() =>
                     this.handleChangePassword(
                         this.props.email,
@@ -55,7 +55,7 @@ export default class ChangePassword extends Component{
                         this.state.newPassword,
                         this.state.checkNewPassword
                         )}>
-            <Text style={styles.text}>확인</Text>
+            <Text style={{color: '#fff', fontSize: 20}}>확인</Text>
             </TouchableOpacity>
         </View>
     );

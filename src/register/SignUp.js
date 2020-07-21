@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 
+var login_background = require('../../asset/login_background.jpg')
 
 class SignUp extends Component{
     constructor(props){
@@ -40,17 +41,26 @@ class SignUp extends Component{
 
     render(){
         return (
-            <View style={styles.container}>
-                <Text style={styles.textentry}>Email</Text>
-                <TextInput style={styles.inputbox} onChangeText={(input)=>this.setState({email:input})}/>
-                <Text style={styles.textentry}>Password</Text>
-                <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({password: input})}/>
-                <Text style={styles.textentry}>Confirm Password</Text>
-                <TextInput secureTextEntry={true} style={styles.inputbox} onChangeText={(input)=>this.setState({confirmPassword: input})}/>
+            <ImageBackground source = {login_background} style={{height:'100%', width: '100%', justifyContent: 'center'}}>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                <TextInput style={styles.inputbox} 
+                placeholderTextColor='#000'
+                placeholder="이메일" 
+                onChangeText={(input)=>this.setState({email:input})}/>
+                <TextInput secureTextEntry={true} style={styles.inputbox} 
+                placeholderTextColor='#000'
+                placeholder="비밀번호"
+                onChangeText={(input)=>this.setState({password: input})}/>
+                <TextInput secureTextEntry={true} 
+                style={styles.inputbox} 
+                placeholderTextColor='#000'
+                placeholder="비밀번호 확인"
+                onChangeText={(input)=>this.setState({confirmPassword: input})}/>
                 <TouchableOpacity style={styles.button} onPress={()=>this.handleSubmit()} >
-                <Text>REGISTER!</Text>
+                <Text style={{color: '#fff'}}>회원가입 완료</Text>
                 </TouchableOpacity>
-            </View>
+                </View>
+            </ImageBackground>
         );
     }
 }
@@ -64,20 +74,20 @@ const styles = StyleSheet.create({
         alignItems:'stretch',
         padding: 10,
     },
-    textentry : {
-        fontFamily: "Cochin",
-        fontSize: 20
-    },
     inputbox : {
-        borderColor: 'gray',
-        borderWidth: 1,
+        width: "90%",
+        borderColor: '#323c57',
+        backgroundColor: '#fff',
+        opacity: 0.3,
+        borderWidth: 2,
         paddingLeft: 10,
     },
     button : {
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#000",
         alignItems: 'center',
         marginVertical: 10,
-        padding:10
+        padding:10,
+        width: "50%"
     }
 })
 
