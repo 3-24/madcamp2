@@ -43,18 +43,22 @@ class SignUp extends Component{
         return (
             <ImageBackground source = {login_background} style={{height:'100%', width: '100%', justifyContent: 'center'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                <TextInput style={styles.inputbox} 
+                <TextInput
+                style={styles.inputbox} 
                 placeholderTextColor='#000'
-                placeholder="이메일" 
+                placeholder="이메일"
+                autoCapitalize='none'
                 onChangeText={(input)=>this.setState({email:input})}/>
                 <TextInput secureTextEntry={true} style={styles.inputbox} 
                 placeholderTextColor='#000'
                 placeholder="비밀번호"
+                autoCapitalize='none'
                 onChangeText={(input)=>this.setState({password: input})}/>
                 <TextInput secureTextEntry={true} 
                 style={styles.inputbox} 
                 placeholderTextColor='#000'
                 placeholder="비밀번호 확인"
+                autoCapitalize='none'
                 onChangeText={(input)=>this.setState({confirmPassword: input})}/>
                 <TouchableOpacity style={styles.button} onPress={()=>this.handleSubmit()} >
                 <Text style={{color: '#fff'}}>회원가입 완료</Text>

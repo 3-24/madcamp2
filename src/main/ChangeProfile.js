@@ -82,6 +82,7 @@ export default class ChangeProfile extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#000'}}>
         <TextInput
+          autoCapitalize='none'
           style={styles.inputbox}
           placeholder="아이디"
           onChangeText={(input) => this.setState({nickname:input})}
@@ -95,6 +96,7 @@ export default class ChangeProfile extends Component {
           />
         </TouchableOpacity>
         <TextInput
+          autoCapitalize='none'
           style={styles.inputbox}
           placeholder="소개글"
           onChangeText={(input) => this.setState({aboutMe:input})}

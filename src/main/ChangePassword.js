@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, TextInput, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TextInput, TouchableOpacity, Text} from 'react-native';
 import {styles} from './App';
 export default class ChangePassword extends Component{
     constructor(props){
@@ -43,9 +43,9 @@ export default class ChangePassword extends Component{
     render(){
     return (
         <View style={{flex: 1, backgroundColor: '#000'}}>
-            <TextInput style={styles.nightInputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
-            <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
-            <TextInput style={styles.nightInputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
+            <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="기존 비밀번호" onChangeText={(input) => this.setState({originalPassword: input})}/>
+            <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="새로운 비밀번호" onChangeText={(input) => this.setState({newPassword: input})}/>
+            <TextInput autoCapitalize='none' style={styles.nightInputbox} placeholder="새로운 비밀번호 확인" onChangeText={(input) => this.setState({checkNewPassword: input})}/>
             <TouchableOpacity
                 style={{backgroundColor: '#000', margin: 10, alignItems: 'flex-end', marginRight: 15}}
                 onPress={() =>
